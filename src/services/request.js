@@ -1,11 +1,18 @@
 import axios from "axios";
 
-const getData = async (url) => {
+const api = axios.create({
+  baseURL: "http://localhost/wordpress-react/wp-json/wp/v2", // zameni sa tvojim WP URL-om
+  timeout: 5000,
+  headers: { "Content-Type": "application/json" },
+});
+
+const getData = async (endpoint) => {
   try {
-    const response = await axios.get(url);
+    const response = await api.get(endpoint);
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error("Greška pri fetch-u:", error.message);
+    return null;
   }
 };
 

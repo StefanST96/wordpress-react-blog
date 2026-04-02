@@ -1,0 +1,46 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #3498db; // plava pozadina
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.navLinks {
+  display: flex;
+  gap: 1.5rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navLink {
+  color: #f1c40f;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #f1c40f; // zuta pri hover-u
+  }
+}
+
+/* Responzivno za male ekrane */
+@media (max-width: 600px) {
+  .navLinks {
+    gap: 1rem;
+  }
+}
+
+.active {
+  border-bottom: 2px solid #f1c40f;
+  padding-bottom: 2px;
+}
