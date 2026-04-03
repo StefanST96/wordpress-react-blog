@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost/wordpress-react/wp-json/wp/v2", // zameni sa tvojim WP URL-om
+  baseURL: "http://naissus.info/wp-json/wp/v2", // zameni sa tvojim WP URL-om
   timeout: 5000,
   headers: { "Content-Type": "application/json" },
 });
