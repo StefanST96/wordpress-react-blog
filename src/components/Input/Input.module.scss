@@ -1,0 +1,29 @@
+.input {
+  display: flex;
+  flex-direction: column;
+
+  .inputField {
+    border: solid 1px #ccc;
+    height: 40px;
+    width: 320px;
+    border-radius: 20px;
+    padding: 0 12px;
+    outline: none;
+    font-size: 16px;
+    box-sizing: border-box;
+
+    &::placeholder {
+      opacity: 0.5;
+    }
+  }
+
+  &.small {
+    .inputField {
+      height: 32px;
+    }
+  }
+
+  .inputLabel {
+    margin-bottom: 8px;
+  }
+}
