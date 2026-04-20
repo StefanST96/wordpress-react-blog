@@ -5,6 +5,7 @@ import { Input } from "../../components/Input/Input";
 import styles from "./Posts.module.scss";
 import { useState } from "react";
 import { usePosts } from "../../hooks/usePosts";
+import PostCard from "../../components/PostCard/PostCard";
 
 const Posts = () => {
   const { posts, loading, error } = usePosts();
@@ -34,22 +35,7 @@ const Posts = () => {
       ) : (
         <div className={styles.list}>
           {filteredPosts.map((post) => (
-            <Link key={post.id} to={`/post/${post.id}`} className={styles.post}>
-              <h2 dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-
-              <div
-                className={styles.excerpt}
-                dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
-              />
-
-              {post._embedded?.["wp:featuredmedia"]?.[0]?.source_url && (
-                <img
-                  src={post._embedded["wp:featuredmedia"][0].source_url}
-                  alt={post.title.rendered}
-                  className={styles.postImage}
-                />
-              )}
-            </Link>
+            <PostCard key={post.id} post={post} />
           ))}
         </div>
       )}
