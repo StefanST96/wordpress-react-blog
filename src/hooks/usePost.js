@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getData } from "../services";
+import { getPost } from "../services/posts";
 
 export function usePost(id) {
   const [post, setPost] = useState(null);
@@ -9,7 +9,9 @@ export function usePost(id) {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const data = await getData(`/posts/${id}?_embed`);
+        setLoading(true);
+
+        const data = await getPost(id);
 
         if (data) setPost(data);
         else setError(true);
@@ -20,7 +22,7 @@ export function usePost(id) {
       }
     };
 
-    fetchPost();
+    if (id) fetchPost();
   }, [id]);
 
   return { post, loading, error };

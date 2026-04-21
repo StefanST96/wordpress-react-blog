@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import Loader from "../../components/Loader/Loader";
-import { Button } from "../../components/Button/Button";
+import Loader from "../../components/UI/Loader/Loader";
+import { Button } from "../../components/UI/Button/Button";
 import { usePost } from "../../hooks/usePost";
 import styles from "./Post.module.scss";
 

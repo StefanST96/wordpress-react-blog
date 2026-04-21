@@ -1,18 +1,17 @@
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
+
 const api = axios.create({
-  baseURL: "http://naissus.info/wp-json/wp/v2",
-  headers: { "Content-Type": "application/json" },
+  baseURL: `${BASE_URL}/wp-json/wp/v2`,
 });
 
-const getData = async (endpoint) => {
+export const getData = async (endpoint) => {
   try {
-    const response = await api.get(endpoint);
-    return response.data;
-  } catch (error) {
-    console.error("Greška pri fetch-u:", error.message);
+    const res = await api.get(endpoint);
+    return res.data;
+  } catch (err) {
+    console.error(err);
     return null;
   }
 };
-
-export { getData };

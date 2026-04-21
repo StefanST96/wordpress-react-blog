@@ -1,0 +1,49 @@
+.card {
+  height: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f3f3f3;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.image {
+  height: 150px;
+  border-radius: 10px;
+  background: #ddd;
+}
+
+.title {
+  height: 20px;
+  width: 70%;
+  background: #ddd;
+  border-radius: 6px;
+}
+
+.line {
+  height: 12px;
+  width: 100%;
+  background: #ddd;
+  border-radius: 6px;
+}
+
+.lineShort {
+  height: 12px;
+  width: 80%;
+  background: #ddd;
+  border-radius: 6px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
