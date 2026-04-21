@@ -6,7 +6,7 @@ Modern frontend blog aplikacija izgrađena sa **React + Vite**, koja koristi **W
 
 ## Demo
 
-https://wordpress-react-blog-bruka9ws6-stefanst96s-projects.vercel.app/
+https://wordpress-react-blog.vercel.app/
 
 ---
 
