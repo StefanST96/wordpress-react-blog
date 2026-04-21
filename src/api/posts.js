@@ -1,11 +1,7 @@
-export async function fetchPosts() {
-  const res = await fetch(
-    "https://naissus.info/wp-json/wp/v2/posts"
-  );
+import { getData } from "../services/request";
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch posts");
-  }
+export const getPosts = (page = 1) =>
+  getData(`/posts?_embed&page=${page}&per_page=6`);
 
-  return res.json();
-}
+export const getPost = (id) =>
+  getData(`/posts/${id}?_embed`);

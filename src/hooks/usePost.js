@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPost } from "../services/posts";
+import { getPost } from "../api/posts";
 
 export function usePost(id) {
   const [post, setPost] = useState(null);
