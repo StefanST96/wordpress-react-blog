@@ -7,7 +7,8 @@ export const postCache = {
   },
 
   set(posts) {
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify(posts));
+    const safe = posts.slice(0, 80);
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify(safe));
   },
 
   clear() {

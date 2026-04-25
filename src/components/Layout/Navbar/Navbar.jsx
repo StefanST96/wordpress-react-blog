@@ -1,8 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Navbar.module.scss";
+import { useTheme } from "../../../context/ThemeContext.jsx";
+import { Button } from "../../UI/Button/Button.jsx";
 
 const Navbar = () => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.wrapper}>
@@ -40,6 +44,13 @@ const Navbar = () => {
           >
             Contact
           </NavLink>
+
+          <Button
+            search
+            onClick={toggleTheme}
+            title={theme === "light" ? "Dark" : "Light"}
+            s
+          ></Button>
         </div>
       </div>
     </nav>

@@ -26,3 +26,23 @@
   border-radius: 10px;
   margin-top: 10px;
 }
+
+[data-theme="dark"] {
+  
+  .card {
+    background: #333;
+    color: #fff;
+    border: solid 1px #555;
+    transition: all 0.3s ease;
+  }
+  
+  .title {
+    color: #fff;
+    transition: all 0.3s ease;
+  } 
+
+  .excerpt {
+    color: #aaa;
+    transition: all 0.3s ease;
+  }
+}

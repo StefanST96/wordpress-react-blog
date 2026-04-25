@@ -28,6 +28,7 @@
   color: white;
   text-decoration: none;
   font-weight: 500;
+  align-items: center;
   transition: color 0.2s;
 }
 
@@ -52,4 +53,24 @@
 .active {
   border-bottom: 2px solid #050505;
   padding-bottom: 2px;
+}
+
+[data-theme="dark"] {
+  .navbar {
+    background-color: #2d2d2d;
+    box-shadow: 0 0 4px 0 #fff;
+  }
+
+  .navLink {
+    color: #fff;
+
+    &:hover {
+      color: #8b8b8b;
+    }
+  }
+
+  .active {
+    border-bottom: 2px solid #fff;
+  }
+  
 }

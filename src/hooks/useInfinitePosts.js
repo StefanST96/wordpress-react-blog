@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getPosts } from "../api/posts";
-import { postCache } from "../cache/postCache";
+import { postCache } from "../cache/postCache.js";
 
 export function useInfinitePosts() {
   const cached = postCache.get();

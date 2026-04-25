@@ -19,3 +19,16 @@
   line-height: 1.6;
   font-size: 1.1rem;
 }
+
+[data-theme="dark"] {
+  .title {
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+
+  .content {
+    color: #ddd;
+    transition: all 0.3s ease;
+  }
+  
+}

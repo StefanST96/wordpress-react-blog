@@ -27,3 +27,20 @@
     margin-bottom: 8px;
   }
 }
+
+
+[data-theme="dark"] {
+  .input {
+    .inputField {
+      background-color: #333;
+      color: #fff;
+      border: solid 1px #555;
+      transition: all 0.3s ease;
+
+      &::placeholder {
+        color: #aaa;
+      }
+    }
+  }
+
+}
