@@ -1,6 +1,14 @@
 * {
   box-sizing: border-box;
 }
+p {
+  line-height: 1.6;
+  color: #666;
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+}
 :root {
   --bg: #ffffff;
   --text: #111111;

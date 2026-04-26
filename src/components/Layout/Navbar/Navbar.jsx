@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import styles from "./Navbar.module.scss";
 import { useTheme } from "../../../context/ThemeContext.jsx";
 import { Button } from "../../UI/Button/Button.jsx";
@@ -9,6 +9,8 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   const closeMenu = () => setOpen(false);
+
+  const location = useLocation();
 
   return (
     <nav className={styles.navbar}>
@@ -49,10 +51,15 @@ const Navbar = () => {
 
           <NavLink
             to="/posts"
-            onClick={closeMenu}
-            className={({ isActive }) =>
-              isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
-            }
+            className={() => {
+              const isPosts =
+                location.pathname.startsWith("/posts") ||
+                location.pathname.startsWith("/post");
+
+              return isPosts
+                ? `${styles.navLink} ${styles.active}`
+                : styles.navLink;
+            }}
           >
             Posts
           </NavLink>
