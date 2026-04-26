@@ -37,19 +37,43 @@ const Navbar = () => {
 
         {/* NAV LINKS */}
         <div className={`${styles.navLinks} ${open ? styles.open : ""}`}>
-          <NavLink to="/" onClick={closeMenu} className={styles.navLink}>
+          <NavLink
+            to="/"
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
+            }
+          >
             Home
           </NavLink>
 
-          <NavLink to="/posts" onClick={closeMenu} className={styles.navLink}>
+          <NavLink
+            to="/posts"
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
+            }
+          >
             Posts
           </NavLink>
 
-          <NavLink to="/about" onClick={closeMenu} className={styles.navLink}>
+          <NavLink
+            to="/about"
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
+            }
+          >
             About
           </NavLink>
 
-          <NavLink to="/contact" onClick={closeMenu} className={styles.navLink}>
+          <NavLink
+            to="/contact"
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
+            }
+          >
             Contact
           </NavLink>
 
