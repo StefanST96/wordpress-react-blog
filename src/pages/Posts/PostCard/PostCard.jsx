@@ -26,7 +26,7 @@ const PostCard = ({ post, onCategoryClick }) => {
             </span>
           ))}
         </div>
-
+        <img src={image} alt="" className={styles.image} />
         <h2
           className={styles.title}
           dangerouslySetInnerHTML={{ __html: post.title.rendered }}
@@ -46,8 +46,6 @@ const PostCard = ({ post, onCategoryClick }) => {
           </span>
         </div>
       </div>
-
-      <img src={image} alt="" className={styles.image} />
     </Link>
   );
 };
