@@ -11,6 +11,11 @@ const api = axios.create({
 });
 
 export const getData = async (endpoint) => {
-  const res = await api.get(endpoint);
-  return res.data;
+  try {
+    const res = await api.get(endpoint);
+    return res.data;
+  } catch (err) {
+    console.error("API error:", err);
+    throw err;
+  }
 };

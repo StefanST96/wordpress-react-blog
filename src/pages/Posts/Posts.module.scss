@@ -2,6 +2,12 @@
   padding: 2rem;
   max-width: 900px;
   margin: 0 auto;
+
+  .filter {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
 }
 .card {
   height: 100%;
@@ -31,4 +37,22 @@
   }
 
   
+}
+
+.select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  margin: 10px 0;
+  cursor: pointer;
+  background: white;
+}
+
+.selectSkeleton {
+  width: 200px;
+  height: 38px;
+  background: #eee;
+  border-radius: 8px;
+  margin: 10px 0;
 }

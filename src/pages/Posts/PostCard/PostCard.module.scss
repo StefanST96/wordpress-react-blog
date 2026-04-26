@@ -28,21 +28,42 @@
 }
 
 [data-theme="dark"] {
-  
   .card {
     background: #333;
     color: #fff;
     border: solid 1px #555;
     transition: all 0.3s ease;
   }
-  
+
   .title {
     color: #fff;
     transition: all 0.3s ease;
-  } 
+  }
 
   .excerpt {
     color: #aaa;
     transition: all 0.3s ease;
+  }
+}
+
+.meta {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #777;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.date {
+  color: #999;
+}
+
+.category {
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
   }
 }

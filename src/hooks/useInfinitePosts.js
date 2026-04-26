@@ -1,20 +1,29 @@
 import { useEffect, useRef, useState } from "react";
-import { getPosts } from "../api/posts";
+import { getPosts, getPostsByCategory } from "../api/posts";
 import { postCache } from "../cache/postCache.js";
 
 export function useInfinitePosts() {
   const cached = postCache.get();
 
-  const [posts, setPosts] = useState(cached || []);
+  const [posts, setPosts] = useState(Array.isArray(cached) ? cached : []);
+
   const [page, setPage] = useState(
-    cached ? Math.ceil(cached.length / 6) + 1 : 1,
+    Array.isArray(cached) ? Math.ceil(cached.length / 6) + 1 : 1,
   );
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [activeCategory, setActiveCategory] = useState(null);
 
   const isFetching = useRef(false);
+
+  const changeCategory = (catId) => {
+    setActiveCategory(catId);
+    setPosts([]);
+    setPage(1);
+    setHasMore(true);
+  };
 
   const fetchPosts = async () => {
     if (isFetching.current || !hasMore) return;
@@ -23,23 +32,26 @@ export function useInfinitePosts() {
       isFetching.current = true;
       setLoading(true);
 
-      const data = await getPosts(page);
+      const data = activeCategory
+        ? await getPostsByCategory(activeCategory, page)
+        : await getPosts(page);
 
-      if (!data || data.length === 0) {
+      if (!Array.isArray(data) || data.length === 0) {
         setHasMore(false);
         return;
       }
 
       setPosts((prev) => {
+        const safePrev = Array.isArray(prev) ? prev : [];
+
         const map = new Map();
 
-        [...prev, ...data].forEach((post) => {
+        [...safePrev, ...data].forEach((post) => {
           map.set(post.id, post);
         });
 
         const merged = Array.from(map.values());
 
-        // CACHE UPDATE
         postCache.set(merged);
 
         return merged;
@@ -59,12 +71,20 @@ export function useInfinitePosts() {
 
   useEffect(() => {
     fetchPosts();
-  }, [page]);
+  }, [page, activeCategory]);
 
   const loadMore = () => {
     if (loading || !hasMore) return;
     setPage((prev) => prev + 1);
   };
 
-  return { posts, loading, error, hasMore, loadMore };
+  return {
+    posts,
+    loading,
+    error,
+    hasMore,
+    loadMore,
+    changeCategory,
+    activeCategory,
+  };
 }

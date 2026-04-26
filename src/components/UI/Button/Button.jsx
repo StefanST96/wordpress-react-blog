@@ -10,8 +10,9 @@ const Button = ({
   disabled,
   onClick,
   title,
+  dark,
 }) => {
-  const classes = `${success ? styles.success : ""} ${warning ? styles.warning : ""} ${danger ? styles.danger : ""} ${small ? styles.small : ""}${search ? styles.search : ""}
+  const classes = `${success ? styles.success : ""} ${warning ? styles.warning : ""} ${danger ? styles.danger : ""} ${small ? styles.small : ""}${search ? styles.search : ""} ${dark ? styles.dark : ""}
   `;
 
   return (
@@ -34,6 +35,7 @@ Button.propTypes = {
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
   title: PropTypes.string,
+  dark: PropTypes.bool,
 };
 
 export { Button };

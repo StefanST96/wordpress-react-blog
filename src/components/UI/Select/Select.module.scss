@@ -1,0 +1,86 @@
+.select {
+  display: flex;
+  flex-direction: column;
+
+  .selectField {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: solid 1px #ccc;
+    height: 40px;
+    width: 320px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    background-color: #fff;
+    padding: 0 12px;
+    outline: none;
+    font-size: 16px;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    &.marginNone {
+      margin-bottom: 0;
+    }
+
+    .options {
+      z-index: 99;
+      background-color: #fff;
+      list-style-type: none;
+      position: absolute;
+      width: 100%;
+      top: 100%;
+      left: 0;
+      margin: 12px 0 0 0;
+      border: solid 1px #ccc;
+      border-radius: 12px;
+      padding: 0 12px;
+      box-sizing: border-box;
+
+      li {
+        padding: 4px;
+
+        &:hover {
+          color: #4e4e4e;
+        }
+      }
+    }
+    .selectPlaceholder {
+      color: #bababa;
+    }
+
+    &.disabled {
+      color: #bababa;
+      pointer-events: none;
+    }
+  }
+
+  .selectLabel {
+    margin-bottom: 8px;
+  }
+}
+
+[data-theme="dark"] {
+  .select {
+    .selectField {
+      background-color: #333;
+      color: #fff;
+      border: solid 1px #555;
+      transition: all 0.3s ease;
+
+      .options {
+        background-color: #333;
+        border: solid 1px #555;
+        transition: all 0.3s ease;
+        li {
+          &:hover {
+            color: #cecece;
+          }
+        }
+      }
+
+      &.disabled {
+        color: #aaa;
+      }
+    }
+  }
+}

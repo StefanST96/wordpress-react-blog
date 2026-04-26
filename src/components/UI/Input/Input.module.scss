@@ -2,6 +2,10 @@
   display: flex;
   flex-direction: column;
 
+  &.center {
+    align-items: center;
+  }
+
   .inputField {
     border: solid 1px #ccc;
     height: 40px;
@@ -22,6 +26,7 @@
       height: 32px;
     }
   }
+
 
   .inputLabel {
     margin-bottom: 8px;

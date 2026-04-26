@@ -46,10 +46,9 @@ const Navbar = () => {
           </NavLink>
 
           <Button
-            search
             onClick={toggleTheme}
             title={theme === "light" ? "Dark" : "Light"}
-            s
+            dark
           ></Button>
         </div>
       </div>

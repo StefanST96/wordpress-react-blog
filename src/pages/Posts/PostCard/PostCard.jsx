@@ -22,6 +22,20 @@ const PostCard = ({ post }) => {
           alt={post.title.rendered}
         />
       )}
+      <p className={styles.meta}>
+        <span className={styles.date}>
+          {new Date(post.date).toLocaleDateString("sr-RS", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })}
+        </span>
+
+        <span className={styles.category}>
+          {" • "}
+          {post._embedded?.["wp:term"]?.[0]?.map((cat) => cat.name).join(", ")}
+        </span>
+      </p>
     </Link>
   );
 };

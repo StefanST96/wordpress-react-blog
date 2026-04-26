@@ -4,6 +4,7 @@ const Input = ({
   value,
   onChange,
   small,
+  center,
   label,
   placeholder,
   customClass,
@@ -15,7 +16,9 @@ const Input = ({
   };
 
   return (
-    <section className={`${styles.input} ${small ? styles.small : ""}`}>
+    <section
+      className={`${styles.input} ${small ? styles.small : ""} ${center ? styles.center : ""}`}
+    >
       {renderLabel()}
 
       <input
