@@ -27,7 +27,7 @@ const Posts = () => {
   const isSearching = debouncedSearch.length > 0;
 
   const TEXT = {
-    title: "WordPress Postovi",
+    title: "Vesti",
     empty: "Nema postova za pretragu",
   };
 

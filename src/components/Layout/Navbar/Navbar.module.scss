@@ -1,22 +1,21 @@
 .navbar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 60px;
-  background-color: #fff;
-  border-bottom: 1px solid #444444;
-  top: 0;
   position: sticky;
+  top: 0;
   z-index: 100;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
 }
+
 .wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  max-width: 1000px;
+  padding: 0 15px;
 }
+
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
@@ -25,51 +24,79 @@
 .navLinks {
   display: flex;
   gap: 1.5rem;
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
   align-items: center;
-  transition: color 0.2s;
 }
 
 .navLink {
-  color: #000;
   text-decoration: none;
+  color: #000;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: 0.2s;
 
   &:hover {
-    color: #8b8b8b;
-  }
-}
-
-/* Responzivno za male ekrane */
-@media (max-width: 600px) {
-  .navLinks {
-    gap: 1rem;
+    color: #777;
   }
 }
 
 .active {
-  border-bottom: 2px solid #050505;
-  padding-bottom: 2px;
+  border-bottom: 2px solid #000;
+}
+
+.hamburger {
+  cursor: pointer;
+  display: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  svg {
+    display: block;
+  }
+}
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .navLinks {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+
+    flex-direction: column;
+    background: white;
+    padding: 20px;
+
+    display: none;
+    gap: 15px;
+
+    border-bottom: 1px solid #ddd;
+  }
+
+  .navLinks.open {
+    display: flex;
+  }
 }
 
 [data-theme="dark"] {
   .navbar {
-    background-color: #2d2d2d;
-    border-bottom: 1px solid #ffffff;
+    background: #2d2d2d;
+    border-bottom: 1px solid #444;
   }
 
   .navLink {
     color: #fff;
-
-    &:hover {
-      color: #8b8b8b;
-    }
   }
 
   .active {
     border-bottom: 2px solid #fff;
+  }
+
+  .navLinks {
+    background: #2d2d2d;
   }
 }

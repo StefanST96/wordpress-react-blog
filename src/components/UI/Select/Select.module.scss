@@ -58,6 +58,19 @@
     margin-bottom: 8px;
   }
 }
+@media (max-width: 768px) {
+  .selectField {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .options {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    z-index: 10;
+  }
+}
 
 [data-theme="dark"] {
   .select {
