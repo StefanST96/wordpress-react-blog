@@ -7,9 +7,9 @@ const Home = () => {
     <div className={styles.container}>
       {/* HERO */}
       <section className={styles.hero}>
-        <h1>Frontend Developer</h1>
+        <h1>Stefan Taskovic</h1>
 
-        <p>I build modern web apps with React and WordPress REST API.</p>
+        <p>Frontend Developer specializing in React & Headless WordPress.</p>
       </section>
 
       <section className={styles.section}>

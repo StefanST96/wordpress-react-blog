@@ -15,7 +15,10 @@ export const getData = async (endpoint) => {
     const res = await api.get(endpoint);
     return res.data;
   } catch (err) {
-    console.error("API error:", err);
+    // 400 = nema više stranica, tiho ignoriši
+    if (err?.response?.status !== 400) {
+      console.error("API error:", err);
+    }
     throw err;
   }
 };

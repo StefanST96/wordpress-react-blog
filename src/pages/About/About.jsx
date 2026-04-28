@@ -29,7 +29,7 @@ const About = () => {
     const fetchPage = async () => {
       try {
         const res = await fetch(
-          "https://naissus.info/wp-json/wp/v2/pages?slug=o-nama",
+          "https://localhost:8080/wp-json/wp/v2/pages?slug=o-nama",
         );
 
         const data = await res.json();

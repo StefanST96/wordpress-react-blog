@@ -3,7 +3,9 @@ import { getPosts, getPostsByCategory } from "../api/posts";
 import { postCache } from "../cache/postCache.js";
 
 export function useInfinitePosts() {
-  const cached = postCache.get();
+  const [activeCategory, setActiveCategory] = useState(null);
+
+  const cached = postCache.get(activeCategory);
 
   const [posts, setPosts] = useState(Array.isArray(cached) ? cached : []);
 
@@ -14,7 +16,6 @@ export function useInfinitePosts() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [activeCategory, setActiveCategory] = useState(null);
 
   const isFetching = useRef(false);
 
@@ -43,17 +44,12 @@ export function useInfinitePosts() {
 
       setPosts((prev) => {
         const safePrev = Array.isArray(prev) ? prev : [];
-
         const map = new Map();
-
         [...safePrev, ...data].forEach((post) => {
           map.set(post.id, post);
         });
-
         const merged = Array.from(map.values());
-
-        postCache.set(merged);
-
+        postCache.set(merged, activeCategory);
         return merged;
       });
 
@@ -61,8 +57,13 @@ export function useInfinitePosts() {
         setHasMore(false);
       }
     } catch (e) {
-      console.error(e);
-      setError(true);
+      // 400 = nema više stranica, nije greška
+      if (e?.response?.status === 400) {
+        setHasMore(false);
+      } else {
+        console.error(e);
+        setError(true);
+      }
     } finally {
       setLoading(false);
       isFetching.current = false;

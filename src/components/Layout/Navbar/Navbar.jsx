@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.wrapper}>
-        <div className={styles.logo}>Poftfolio</div>
+        <div className={styles.logo}>Portfolio</div>
 
         {/* MOBILE BUTTON */}
         <div

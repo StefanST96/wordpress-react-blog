@@ -4,7 +4,7 @@ import styles from "./PostCard.module.scss";
 
 const PostCard = ({ post, onCategoryClick }) => {
   const image =
-    post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "/fallback.jpg";
+    post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "/fallback.svg";
 
   const categories = post._embedded?.["wp:term"]?.[0] || [];
 

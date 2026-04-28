@@ -49,11 +49,8 @@ const Posts = () => {
   const safePosts = Array.isArray(posts) ? posts : [];
 
   // FILTER LOGIC
-  const categoryFilteredPosts = activeCategory
-    ? safePosts.filter((post) => post?.categories?.includes(activeCategory))
-    : safePosts;
-
-  const searchedPosts = categoryFilteredPosts.filter((post) =>
+  // Kategorije filtrira API — ovde samo search
+  const searchedPosts = safePosts.filter((post) =>
     post?.title?.rendered
       ?.toLowerCase()
       .includes(debouncedSearch.toLowerCase()),
@@ -140,7 +137,7 @@ const Posts = () => {
 
             return (
               <div key={post.id} ref={isLast ? lastPostRef : null}>
-                <PostCard post={post} />
+                <PostCard post={post} onCategoryClick={changeCategory} />
               </div>
             );
           })}
