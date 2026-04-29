@@ -1,114 +1,101 @@
-# WordPress React Blog (Headless CMS)
+# WordPress React Blog
 
-Modern frontend blog aplikacija izgrađena sa **React + Vite**, koja koristi **WordPress REST API** kao headless CMS.
+A headless WordPress blog built with React — fast, modern, and fully responsive.
 
----
-
-## Demo
-
-https://wordpress-react-blog.vercel.app/
+🔗 **[Live Demo](https://wordpress-react-blog.vercel.app/)**
 
 ---
 
-## Opis projekta
+## Screenshot
 
-Ovaj projekat predstavlja frontend aplikaciju koja konzumira WordPress API i prikazuje blog sadržaj kroz moderan React UI.
-
-Cilj projekta:
-
-- prikaz realnog rada sa API-jem
-- izgradnja skalabilne React arhitekture
-- implementacija UX obrazaca koji se koriste u produkciji
+//
 
 ---
 
-## Funkcionalnosti
+## Features
 
-- Lista postova (WordPress API)
-- Pretraga postova (debounced search)
-- Single post prikaz
-- Featured image podrška
-- Skeleton loading (bolji UX)
-- Pagination ("Load more")
-- Error handling
-- Empty state UI
+- 📄 Infinite scroll with automatic pagination
+- 🗂️ Filter posts by category
+- 🔍 Client-side search with debounce
+- 🌙 Dark / Light mode with persistence
+- ⚡ Session cache with TTL (5 min) per category
+- 📱 Fully responsive layout
+- 🔗 Dynamic single post pages (`/post/:id`)
 
 ---
 
-## Arhitektura
+## Tech Stack
 
-Projekt je organizovan po principu separation of concerns:
+| Layer       | Technology                    |
+| ----------- | ----------------------------- |
+| Framework   | React 19                      |
+| Build tool  | Vite                          |
+| Routing     | React Router v7               |
+| HTTP client | Axios                         |
+| Styling     | SCSS Modules                  |
+| CMS         | Headless WordPress (REST API) |
+| Deployment  | Vercel                        |
 
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- A running WordPress instance with REST API enabled
+
+### Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/StefanST96/wordpress-react-blog.git
+cd wordpress-react-blog
+
+# Install dependencies
+npm install
+```
+
+### Environment Variables
+
+Create a `.env` file in the root of the project:
+
+```env
+VITE_SERVER_URL=http://your-wordpress-url.com
+```
+
+### Run Locally
+
+```bash
+npm run dev
+```
+
+App runs on [http://localhost:5173](http://localhost:5173)
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+---
+
+## Project Structure
+
+```
 src/
-
-- components/ # UI komponente
-- hooks/ # custom React hooks
-- pages/ # stranice (Posts, Post, itd.)
-- services/ # API komunikacija
-- styles/ # SCSS moduli
-
----
-
-## Tehnologije
-
-- React (Hooks)
-- Vite
-- SCSS Modules
-- React Router
-- WordPress REST API
-
----
-
-## Ključni koncepti
-
-### 🔹 Custom Hooks
-
-- `usePosts` – fetch + pagination
-- `usePost` – single post fetch
-- `useDebounce` – optimizacija search-a
-
----
-
-### 🔹 UX optimizacije
-
-- Skeleton loading umesto spinner-a
-- Debounced search (300ms delay)
-- Load more pagination
-- Empty & error states
-
----
-
-## WordPress API
-
-Aplikacija koristi:
-
-```
-/wp-json/wp/v2/posts?_embed
+├── api/            # WordPress REST API calls
+├── cache/          # Session cache with TTL
+├── components/     # Reusable UI components (Button, Input, Navbar...)
+├── context/        # ThemeContext (dark/light mode)
+├── hooks/          # Custom hooks (useInfinitePosts, useInfiniteScroll, useDebounce, usePost)
+├── pages/          # Route-level pages (Home, Posts, Post, About, Contact)
+├── routes/         # App routing (AppRoutes)
+└── main.jsx        # Entry point
 ```
 
-Za rad je potreban WordPress backend (lokalni ili online).
-
 ---
 
-## Moguća unapređenja
+## Author
 
-- Infinite scroll
-- Category filter
-- Dark mode
-- Authentication (JWT)
-- Admin dashboard
-- Caching (React Query)
-
----
-
-## Šta ovaj projekat pokazuje
-
-Ovaj projekat demonstrira:
-
-- rad sa REST API
-- razumevanje React arhitekture
-- pisanje čistog i modularnog koda
-- implementaciju realnih UX obrazaca
-- spremnost za rad na produkcijskim aplikacijama
-
----
+**Stefan** — [github.com/StefanST96](https://github.com/StefanST96)

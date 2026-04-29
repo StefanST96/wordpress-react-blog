@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./About.module.scss";
+import { fetchAboutPage } from "../../api/wp";
 
 const cleanWPContent = (html) => {
   if (!html) return "";
@@ -26,14 +27,10 @@ const About = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPage = async () => {
+    const loadPage = async () => {
       try {
-        const res = await fetch(
-          "https://localhost:8080/wp-json/wp/v2/pages?slug=o-nama",
-        );
-
-        const data = await res.json();
-        setPage(data?.[0] || null);
+        const data = await fetchAboutPage();
+        setPage(data);
       } catch (err) {
         console.error("About page error:", err);
       } finally {
@@ -41,7 +38,7 @@ const About = () => {
       }
     };
 
-    fetchPage();
+    loadPage();
   }, []);
 
   if (loading) {

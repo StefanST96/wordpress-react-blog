@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import styles from "./PostCard.module.scss";
 
@@ -48,6 +49,35 @@ const PostCard = ({ post, onCategoryClick }) => {
       </div>
     </Link>
   );
+};
+
+PostCard.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    date: PropTypes.string.isRequired,
+    title: PropTypes.shape({
+      rendered: PropTypes.string.isRequired,
+    }).isRequired,
+    excerpt: PropTypes.shape({
+      rendered: PropTypes.string.isRequired,
+    }).isRequired,
+    _embedded: PropTypes.shape({
+      "wp:featuredmedia": PropTypes.arrayOf(
+        PropTypes.shape({
+          source_url: PropTypes.string,
+        }),
+      ),
+      "wp:term": PropTypes.arrayOf(
+        PropTypes.arrayOf(
+          PropTypes.shape({
+            id: PropTypes.number,
+            name: PropTypes.string,
+          }),
+        ),
+      ),
+    }),
+  }).isRequired,
+  onCategoryClick: PropTypes.func.isRequired,
 };
 
 export default PostCard;

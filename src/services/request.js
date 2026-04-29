@@ -1,13 +1,12 @@
 import axios from "axios";
+import { API_BASE_URL } from "../api/api";
 
-const BASE_URL = import.meta.env.VITE_SERVER_URL;
-
-if (!BASE_URL) {
+if (!API_BASE_URL) {
   console.warn("VITE_SERVER_URL is missing in environment variables");
 }
 
 const api = axios.create({
-  baseURL: `${BASE_URL}/wp-json/wp/v2`,
+  baseURL: `${API_BASE_URL}/wp-json/wp/v2`,
 });
 
 export const getData = async (endpoint) => {
