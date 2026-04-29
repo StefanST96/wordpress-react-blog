@@ -7,3 +7,8 @@ export const fetchAboutPage = async () => {
   const data = await res.json();
   return data?.[0] || null;
 };
+
+// Fetch the "banner" custom field from WordPress
+export const fetchBannerImage = async () => {
+  return `${API_BASE_URL}/wp-content/uploads/2026/03/posao-beograd.png`;
+};
