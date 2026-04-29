@@ -5,25 +5,24 @@ import AppRoutes from "./routes/AppRoutes";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import Footer from "./components/Layout/Footer/Footer.jsx";
 import { getSiteSettings } from "./api/site";
+import { siteCache } from "./cache/siteCache";
 
 function App() {
-  const [site, setSite] = useState({
-    name: "",
-    logo: "",
-  });
+  const cached = siteCache.get();
+
+  const [site, setSite] = useState(cached || { name: "", logo: "" });
 
   useEffect(() => {
     const fetchSite = async () => {
-      try {
-        const data = await getSiteSettings();
+      const data = await getSiteSettings();
 
-        setSite({
-          name: data?.name || "",
-          logo: data?.site_icon_url || "",
-        });
-      } catch (err) {
-        console.error(err);
-      }
+      const formatted = {
+        name: data?.name || "",
+        logo: data?.site_icon_url || "",
+      };
+
+      setSite(formatted);
+      siteCache.set(formatted);
     };
 
     fetchSite();

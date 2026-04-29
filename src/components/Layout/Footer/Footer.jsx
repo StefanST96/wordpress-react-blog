@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Footer.module.scss";
 import { getSiteSettings } from "../../../api/site";
+import { useSiteSettings } from "../../../hooks/useSiteSettings";
 
-const Footer = ({ name, logo }) => {
-  const currentYear = new Date({ name, logo }).getFullYear();
+const Footer = () => {
+  const { name, logo } = useSiteSettings();
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className={styles.footer}>

@@ -3,8 +3,10 @@ import { NavLink, useLocation } from "react-router-dom";
 import styles from "./Navbar.module.scss";
 import { useTheme } from "../../../context/ThemeContext.jsx";
 import { Button } from "../../UI/Button/Button.jsx";
+import { useSiteSettings } from "../../../hooks/useSiteSettings";
 
-const Navbar = ({ name, logo }) => {
+const Navbar = () => {
+  const { name, logo } = useSiteSettings();
   const { theme, toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
 
@@ -35,7 +37,7 @@ const Navbar = ({ name, logo }) => {
         {/* LOGO */}
         <div className={styles.logo}>
           {logo ? <img src={logo} alt="Logo" /> : null}
-          {name ? <span>{name}</span> : "Portfolio"}
+          {name ? <span>{name}</span> : null}
         </div>
 
         {/* HAMBURGER */}
