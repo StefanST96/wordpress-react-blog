@@ -11,7 +11,7 @@ const Footer = () => {
         <div className={styles.top}>
           {/* BRAND */}
           <div className={styles.brand}>
-            <h2 className={styles.logo}>Naissus Blog</h2>
+            <h2 className={styles.logo}>Portfolio</h2>
 
             <p className={styles.description}>
               Modern React & WordPress blog platform with responsive design,
@@ -75,7 +75,7 @@ const Footer = () => {
         </div>
 
         <div className={styles.bottom}>
-          <p>© {currentYear} Naissus Blog. All rights reserved.</p>
+          <p>© {currentYear} React & WordPress. All rights reserved.</p>
         </div>
       </div>
     </footer>
