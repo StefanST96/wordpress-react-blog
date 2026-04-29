@@ -1,71 +1,97 @@
 .footer {
   margin-top: 80px;
-  background: #474747;
+  background: #8b8b8b;
   color: #fff;
   padding: 60px 20px 20px;
 }
 
 .container {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .top {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: 40px;
   padding-bottom: 40px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* BRAND */
 .brand {
-  max-width: 400px;
+  max-width: 420px;
 }
 
 .logo {
-  font-size: 28px;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 16px;
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.logo img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.logo span {
+  transition: 0.2s ease;
+}
+
+.logo:hover img {
+  transform: scale(1.05);
+  opacity: 0.9;
 }
 
 .description {
   line-height: 1.7;
-  color: #cbd5e1;
+  color: #ffffff;
+  font-size: 14px;
 }
 
+/* LINKS */
 .links h3 {
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 16px;
 }
 
 .links ul {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding: 0;
-}
-
-.links li {
   list-style: none;
 }
 
 .links a {
-  color: #cbd5e1;
+  color: #ffffff;
+  font-size: 14px;
   transition: 0.2s ease;
   text-decoration: none;
 }
 
 .links a:hover {
-  color: #fff;
+  color: #a4a4a4;
+  transform: translateX(3px);
 }
 
+/* BOTTOM */
 .bottom {
   padding-top: 20px;
   text-align: center;
-  color: #c2c2c2;
-  font-size: 14px;
+  color: #bebebe;
+  font-size: 13px;
 }
 
+/* RESPONSIVE */
 @media (max-width: 992px) {
   .top {
     grid-template-columns: 1fr 1fr;
@@ -75,9 +101,29 @@
 @media (max-width: 640px) {
   .top {
     grid-template-columns: 1fr;
+    gap: 30px;
   }
 
   .footer {
     padding-top: 40px;
+  }
+}
+
+/* DARK MODE SUPPORT (ako koristiš theme context) */
+[data-theme="dark"] {
+  .footer {
+    background: #474747;
+  }
+
+  .links a {
+    color: #cbcbcb;
+  }
+
+  .links a:hover {
+    color: #fff;
+  }
+
+  .description {
+    color: #cbcbcb;
   }
 }

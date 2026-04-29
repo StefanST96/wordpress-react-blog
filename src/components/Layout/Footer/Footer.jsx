@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Footer.module.scss";
+import { getSiteSettings } from "../../../api/site";
 
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
+const Footer = ({ name, logo }) => {
+  const currentYear = new Date({ name, logo }).getFullYear();
 
   return (
     <footer className={styles.footer}>
@@ -11,7 +12,10 @@ const Footer = () => {
         <div className={styles.top}>
           {/* BRAND */}
           <div className={styles.brand}>
-            <h2 className={styles.logo}>Portfolio</h2>
+            <div className={styles.logo}>
+              {logo ? <img src={logo} alt="Logo" /> : null}
+              {name ? <span>{name}</span> : null}
+            </div>
 
             <p className={styles.description}>
               Modern React & WordPress blog platform with responsive design,
@@ -75,7 +79,9 @@ const Footer = () => {
         </div>
 
         <div className={styles.bottom}>
-          <p>© {currentYear} React & WordPress. All rights reserved.</p>
+          <p>
+            © {currentYear} {name || "React & WordPress"}. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

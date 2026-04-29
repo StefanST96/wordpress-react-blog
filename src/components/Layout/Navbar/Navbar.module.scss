@@ -82,6 +82,42 @@
   }
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  gap: 10px;
+}
+
+/* ako je TEXT logo */
+.logo span {
+  transition: 0.2s ease;
+}
+
+/* ako je IMAGE logo (WP) */
+.logo img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* hover efekat */
+.logo:hover img {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* fallback text logo hover */
+.logo:hover span {
+  opacity: 0.8;
+}
+
 [data-theme="dark"] {
   .navbar {
     background: #2d2d2d;
@@ -99,4 +135,7 @@
   .navLinks {
     background: #2d2d2d;
   }
+  // .logo img {
+  //   filter: brightness(0) invert(1);
+  // }
 }

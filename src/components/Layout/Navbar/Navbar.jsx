@@ -1,23 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import styles from "./Navbar.module.scss";
 import { useTheme } from "../../../context/ThemeContext.jsx";
 import { Button } from "../../UI/Button/Button.jsx";
 
-const Navbar = () => {
+const Navbar = ({ name, logo }) => {
   const { theme, toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
 
+  const location = useLocation();
+
   const closeMenu = () => setOpen(false);
 
-  const location = useLocation();
+  // close menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(`.${styles.navbar}`)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  // Posts active logic (IMPORTANT FIX)
+  const isPostsActive =
+    location.pathname.startsWith("/posts") ||
+    location.pathname.startsWith("/post");
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.wrapper}>
-        <div className={styles.logo}>Portfolio</div>
+        {/* LOGO */}
+        <div className={styles.logo}>
+          {logo ? <img src={logo} alt="Logo" /> : null}
+          {name ? <span>{name}</span> : "Portfolio"}
+        </div>
 
-        {/* MOBILE BUTTON */}
+        {/* HAMBURGER */}
         <div
           className={styles.hamburger}
           onClick={() => setOpen((prev) => !prev)}
@@ -37,7 +58,7 @@ const Navbar = () => {
           </svg>
         </div>
 
-        {/* NAV LINKS */}
+        {/* LINKS */}
         <div className={`${styles.navLinks} ${open ? styles.open : ""}`}>
           <NavLink
             to="/"
@@ -51,15 +72,12 @@ const Navbar = () => {
 
           <NavLink
             to="/posts"
-            className={() => {
-              const isPosts =
-                location.pathname.startsWith("/posts") ||
-                location.pathname.startsWith("/post");
-
-              return isPosts
+            onClick={closeMenu}
+            className={() =>
+              isPostsActive
                 ? `${styles.navLink} ${styles.active}`
-                : styles.navLink;
-            }}
+                : styles.navLink
+            }
           >
             Posts
           </NavLink>
