@@ -7,7 +7,7 @@
 }
 
 .postCard {
-  border: 1px solid #eee;
+  border: 1px solid #252530;
   border-radius: 12px;
   overflow: hidden;
   text-align: left;
@@ -15,7 +15,8 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.12);
+    border-color: #8b5cf6 !important;
   }
 
   img {

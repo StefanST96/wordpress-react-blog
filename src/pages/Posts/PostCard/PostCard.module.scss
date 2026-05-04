@@ -4,16 +4,16 @@
   gap: 20px;
   padding: 20px 10px;
   border-radius: 16px;
-  border-bottom: 1px solid #eee;
+  border: 1px solid #252530;
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-  background: hsla(0, 0%, 0%, 0.1);
 
   transition: background 0.2s ease;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.02);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.12);
+    border-color: #8b5cf6 !important;
   }
 }
 
@@ -71,13 +71,8 @@
 }
 [data-theme="dark"] {
   .card {
-    border-bottom: 1px solid #222;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.03);
-    }
+    background-color: #18181f;
   }
-
   .title {
     color: #e5e7eb;
   }

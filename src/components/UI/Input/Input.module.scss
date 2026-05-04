@@ -27,17 +27,15 @@
     }
   }
 
-
   .inputLabel {
     margin-bottom: 8px;
   }
 }
 
-
 [data-theme="dark"] {
   .input {
     .inputField {
-      background-color: #333;
+      background-color: #18181f;
       color: #fff;
       border: solid 1px #555;
       transition: all 0.3s ease;
@@ -47,5 +45,4 @@
       }
     }
   }
-
 }

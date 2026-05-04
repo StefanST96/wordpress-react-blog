@@ -11,14 +11,14 @@ h1, h2, h3 {
 }
 :root {
   --bg: #ffffff;
-  --text: #111111;
+  --text: #0d0d12;
   --card: #f5f5f5;
 }
 
 [data-theme="dark"] {
-  --bg: #2d2d2d;
+  --bg: #0d0d12;
   --text: #ffffff;
-  --card: #2d2d2d;
+  --card: #0d0d12;
 }
 
 body {

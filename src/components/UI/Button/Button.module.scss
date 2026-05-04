@@ -51,8 +51,29 @@
   }
 
   &.dark {
-    background-color: #333;
-    color: #fff;
+    background-color: #fff;
     border: 1px solid #555;
+    box-shadow: inset 26px 0 8px -8px #18181f;
+    transition: 0.5s;
+    &:hover {
+      background-color: #18181f;
+      color: #fff;
+      box-shadow: inset 26px 0 8px -8px #fff;
+    }
+  }
+}
+
+[data-theme="dark"] {
+  .button {
+    &.dark {
+      background-color: #18181f;
+      color: #fff;
+      box-shadow: inset 26px 0 8px -8px #fff;
+      &:hover {
+        background-color: #fff;
+        color: #444;
+        box-shadow: inset 26px 0 8px -8px #18181f;
+      }
+    }
   }
 }
