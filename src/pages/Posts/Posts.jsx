@@ -26,7 +26,7 @@ const Posts = () => {
   const isSearching = debouncedSearch.length > 0;
 
   const TEXT = {
-    title: "Vesti",
+    title: "Firme i usluge",
     empty: "Nema postova za pretragu",
   };
 
