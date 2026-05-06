@@ -9,8 +9,8 @@ import Post from "../pages/Posts/Post/Post";
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/posts" element={<Posts />} />
+      <Route path="/" element={<Posts />} />
+      <Route path="/posts" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/post/:id" element={<Post />} />

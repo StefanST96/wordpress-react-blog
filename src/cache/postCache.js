@@ -1,34 +1,52 @@
-const TTL = 5 * 60 * 1000; // 5 minuta
+const TTL = 5 * 60 * 1000;
+const PREFIX = "posts_cache_";
 
-const getKey = (catId) =>
-  catId ? `posts_cache_cat_${catId}_v1` : "posts_cache_all_v1";
+const getKey = (filters = {}, page = 1) => {
+  const category = filters.category ?? "all";
+  const city = filters.city ?? "all";
+
+  return `${PREFIX}c${category}_ct${city}_p${page}_v1`;
+};
 
 export const postCache = {
-  get(catId = null) {
-    const key = getKey(catId);
-    const raw = sessionStorage.getItem(key);
-    if (!raw) return null;
-    const { posts, timestamp } = JSON.parse(raw);
-    if (Date.now() - timestamp > TTL) {
-      sessionStorage.removeItem(key);
+  get(filters = {}, page = 1) {
+    try {
+      const key = getKey(filters, page);
+      const raw = sessionStorage.getItem(key);
+
+      if (!raw) return null;
+
+      const { posts, timestamp } = JSON.parse(raw);
+
+      if (Date.now() - timestamp > TTL) {
+        sessionStorage.removeItem(key);
+        return null;
+      }
+
+      return posts;
+    } catch {
       return null;
     }
-    return posts;
   },
 
-  set(posts, catId = null) {
-    const key = getKey(catId);
-    const safe = posts.slice(0, 80);
-    sessionStorage.setItem(
-      key,
-      JSON.stringify({
-        posts: safe,
-        timestamp: Date.now(),
-      }),
-    );
-  },
+  set(posts, filters = {}, page = 1) {
+    try {
+      const key = getKey(filters, page);
 
-  clear(catId = null) {
-    sessionStorage.removeItem(getKey(catId));
+      sessionStorage.setItem(
+        key,
+        JSON.stringify({
+          posts: Array.isArray(posts) ? posts.slice(0, 6) : [],
+          timestamp: Date.now(),
+        }),
+      );
+    } catch (err) {
+      console.error("Cache set error:", err);
+
+      // fallback
+      try {
+        sessionStorage.clear();
+      } catch {}
+    }
   },
 };

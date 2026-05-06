@@ -69,7 +69,7 @@ const Navbar = () => {
               isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
             }
           >
-            Home
+            Početna
           </NavLink>
 
           <NavLink
@@ -81,7 +81,7 @@ const Navbar = () => {
                 : styles.navLink
             }
           >
-            Posts
+            Biznis Adresar
           </NavLink>
 
           <NavLink
@@ -91,7 +91,7 @@ const Navbar = () => {
               isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
             }
           >
-            About
+            Biznis Vesti
           </NavLink>
 
           <NavLink
@@ -101,7 +101,7 @@ const Navbar = () => {
               isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
             }
           >
-            Contact
+            Kontakt
           </NavLink>
 
           <Button

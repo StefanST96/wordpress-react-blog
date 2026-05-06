@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { getPosts, getPostsByCategory } from "../api/posts";
+import { getFilteredPosts } from "../api/posts";
 import { postCache } from "../cache/postCache.js";
 
+const PER_PAGE = 6;
+
 export function useInfinitePosts() {
-  const [activeCategory, setActiveCategory] = useState(null);
+  const [filters, setFilters] = useState({
+    category: null,
+    city: null,
+  });
 
-  const cached = postCache.get(activeCategory);
-
-  const [posts, setPosts] = useState(Array.isArray(cached) ? cached : []);
-
-  const [page, setPage] = useState(
-    Array.isArray(cached) ? Math.ceil(cached.length / 6) + 1 : 1,
-  );
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -19,11 +19,26 @@ export function useInfinitePosts() {
 
   const isFetching = useRef(false);
 
-  const changeCategory = (catId) => {
-    setActiveCategory(catId);
-    setPosts([]);
-    setPage(1);
-    setHasMore(true);
+  // LOAD CACHE WHEN FILTERS CHANGE
+  useEffect(() => {
+    const cached = postCache.get(filters);
+
+    if (cached?.length) {
+      setPosts(cached);
+      setPage(Math.ceil(cached.length / PER_PAGE) + 1);
+      setHasMore(true);
+    } else {
+      setPosts([]);
+      setPage(1);
+      setHasMore(true);
+    }
+  }, [filters]);
+
+  const changeFilters = (newFilters) => {
+    setFilters((prev) => ({
+      ...prev,
+      ...newFilters,
+    }));
   };
 
   const fetchPosts = async () => {
@@ -32,32 +47,37 @@ export function useInfinitePosts() {
     try {
       isFetching.current = true;
       setLoading(true);
+      setError(false);
 
-      const data = activeCategory
-        ? await getPostsByCategory(activeCategory, page)
-        : await getPosts(page);
+      const data = await getFilteredPosts({
+        page,
+        category: filters.category,
+        city: filters.city,
+      });
 
-      if (!Array.isArray(data) || data.length === 0) {
+      if (!Array.isArray(data) || !data.length) {
         setHasMore(false);
         return;
       }
 
       setPosts((prev) => {
-        const safePrev = Array.isArray(prev) ? prev : [];
         const map = new Map();
-        [...safePrev, ...data].forEach((post) => {
-          map.set(post.id, post);
+
+        [...prev, ...data].forEach((p) => {
+          map.set(p.id, p);
         });
+
         const merged = Array.from(map.values());
-        postCache.set(merged, activeCategory);
+
+        postCache.set(data, filters, page);
+
         return merged;
       });
 
-      if (data.length < 6) {
+      if (data.length < PER_PAGE) {
         setHasMore(false);
       }
     } catch (e) {
-      // 400 = nema više stranica, nije greška
       if (e?.response?.status === 400) {
         setHasMore(false);
       } else {
@@ -71,12 +91,40 @@ export function useInfinitePosts() {
   };
 
   useEffect(() => {
-    fetchPosts();
-  }, [page, activeCategory]);
+    let isMounted = true;
+
+    const load = async () => {
+      const cached = postCache.get(filters, page);
+
+      // 1. ako postoji cache za ovu stranicu
+      if (cached?.length) {
+        setPosts((prev) => {
+          const map = new Map();
+
+          [...prev, ...cached].forEach((p) => {
+            map.set(p.id, p);
+          });
+
+          return Array.from(map.values());
+        });
+
+        return;
+      }
+
+      // 2. ako nema cache → fetch
+      await fetchPosts();
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [page, filters]);
 
   const loadMore = () => {
     if (loading || !hasMore) return;
-    setPage((prev) => prev + 1);
+    setPage((p) => p + 1);
   };
 
   return {
@@ -85,7 +133,7 @@ export function useInfinitePosts() {
     error,
     hasMore,
     loadMore,
-    changeCategory,
-    activeCategory,
+    filters,
+    changeFilters,
   };
 }

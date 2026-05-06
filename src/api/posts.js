@@ -1,16 +1,39 @@
 import { getData } from "../services/request";
 
-export const getPosts = (page = 1) =>
-  getData(`/posts?_embed&page=${page}&per_page=6&orderby=date&order=desc`);
+const DEFAULT_POST_PARAMS = {
+  _embed: true,
+  per_page: 6,
+  orderby: "date",
+  order: "desc",
+};
+
+const buildPostsUrl = (customParams = {}) => {
+  const params = new URLSearchParams({
+    ...DEFAULT_POST_PARAMS,
+    ...customParams,
+  });
+
+  return `/posts?${params.toString()}`;
+};
+
+export const getPosts = (page = 1) => getData(buildPostsUrl({ page }));
+
+export const getFilteredPosts = ({ page = 1, category, city, perPage = 6 }) => {
+  const params = {
+    page,
+    per_page: perPage,
+  };
+
+  if (category) params.categories = category;
+  if (city) params.gradovi = city;
+
+  return getData(buildPostsUrl(params));
+};
 
 export const getPost = (id) => getData(`/posts/${id}?_embed`);
 
+export const getCities = () => getData("/gradovi?per_page=100");
+
 export const getCategories = () => getData("/categories?per_page=100");
 
-export const getPostsByCategory = (catId, page = 1) =>
-  getData(
-    `/posts?_embed&categories=${catId}&page=${page}&per_page=6&orderby=date&order=desc`,
-  );
-
-export const getLatestPosts = () =>
-  getData("/posts?_embed&per_page=3&orderby=date&order=desc");
+export const getLatestPosts = () => getData(buildPostsUrl({ per_page: 3 }));

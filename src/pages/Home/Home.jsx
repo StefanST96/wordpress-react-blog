@@ -1,11 +1,8 @@
 import React from "react";
 import styles from "./Home.module.scss";
 import LatestPosts from "../Posts/LatestPosts/LatestPosts.jsx";
-import { fetchBannerImage } from "../../api/wp";
 
 const Home = () => {
-  const [banner, setBanner] = React.useState("");
-
   React.useEffect(() => {
     const loadBanner = async () => {
       try {
@@ -26,14 +23,6 @@ const Home = () => {
         <h1>Stefan Taskovic</h1>
 
         <p>Frontend Developer specializing in React & Headless WordPress.</p>
-      </section>
-
-      {/* BANNER */}
-      <section className={styles.bannerSection}>
-        <h2>Custom Banner</h2>
-        <a href="#" target="_blank" rel="noreferrer" className={styles.banner}>
-          {banner && <img src={banner} alt="Banner" loading="lazy" />}
-        </a>
       </section>
 
       {/* FEATURED PROJECT */}
