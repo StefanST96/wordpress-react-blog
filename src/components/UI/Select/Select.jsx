@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 const Select = ({
   disabled,
   onChange,
-  options,
+  options = [],
   label,
   placeholder,
   customClass,

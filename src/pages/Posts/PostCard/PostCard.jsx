@@ -12,7 +12,7 @@ const PostCard = ({ post, onCategoryClick }) => {
   return (
     <Link to={`/post/${post.id}`} className={styles.card}>
       <div className={styles.content}>
-        <div className={styles.metaTop}>
+        {/* <div className={styles.metaTop}>
           {categories.map((cat) => (
             <span
               key={cat.id}
@@ -26,26 +26,26 @@ const PostCard = ({ post, onCategoryClick }) => {
               {cat.name}
             </span>
           ))}
-        </div>
+        </div> */}
         <img src={image} alt="" className={styles.image} />
-        <h2
+        <h4
           className={styles.title}
           dangerouslySetInnerHTML={{ __html: post.title.rendered }}
         />
 
-        <p className={styles.excerpt}>
+        {/* <p className={styles.excerpt}>
           {post.excerpt.rendered.replace(/<[^>]+>/g, "").slice(0, 140)}
           ...
-        </p>
+        </p> */}
 
-        <div className={styles.metaBottom}>
+        {/* <div className={styles.metaBottom}>
           <span className={styles.date}>
             {new Date(post.date).toLocaleDateString("sr-RS", {
               day: "numeric",
               month: "short",
             })}
           </span>
-        </div>
+        </div> */}
       </div>
     </Link>
   );

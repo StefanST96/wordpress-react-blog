@@ -19,6 +19,12 @@
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  gap: 10px;
 }
 
 .navLinks {
@@ -30,8 +36,8 @@
 .navLink {
   text-decoration: none;
   color: #000;
-  font-weight: 500;
   transition: 0.2s;
+  font-weight: 700;
 
   &:hover {
     color: #777;
@@ -81,15 +87,9 @@
   .navLinks.open {
     display: flex;
   }
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  cursor: pointer;
-  gap: 10px;
+  .active {
+    padding: 0;
+  }
 }
 
 /* ako je TEXT logo */
@@ -99,7 +99,7 @@
 
 /* ako je IMAGE logo (WP) */
 .logo img {
-  height: 38px;
+  height: 64px;
   width: auto;
   object-fit: contain;
   display: block;
@@ -134,8 +134,11 @@
       color: #fff;
     }
   }
+  .navLinks {
+    background: #13131a;
+  }
 
-  // .logo img {
-  //   filter: brightness(0) invert(1);
-  // }
+  .logo img {
+    filter: brightness(0) invert(1);
+  }
 }

@@ -24,8 +24,8 @@ export const getFilteredPosts = ({ page = 1, category, city, perPage = 6 }) => {
     per_page: perPage,
   };
 
-  if (category) params.categories = category;
-  if (city) params.gradovi = city;
+  if (category !== null && category !== "all") params.categories = category;
+  if (city !== null && city !== "all") params.gradovi = city;
 
   return getData(buildPostsUrl(params));
 };

@@ -36,17 +36,25 @@ export const postCache = {
       sessionStorage.setItem(
         key,
         JSON.stringify({
-          posts: Array.isArray(posts) ? posts.slice(0, 6) : [],
+          posts: Array.isArray(posts) ? posts : [],
           timestamp: Date.now(),
         }),
       );
     } catch (err) {
       console.error("Cache set error:", err);
 
-      // fallback
+      // fallback ako storage pukne
       try {
         sessionStorage.clear();
       } catch {}
     }
+  },
+
+  clear() {
+    try {
+      Object.keys(sessionStorage)
+        .filter((k) => k.startsWith(PREFIX))
+        .forEach((k) => sessionStorage.removeItem(k));
+    } catch {}
   },
 };

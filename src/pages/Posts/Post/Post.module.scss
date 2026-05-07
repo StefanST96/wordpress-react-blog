@@ -1,7 +1,9 @@
 .container {
   padding: 2rem;
-  max-width: 800px;
+  max-width: 1024px;
   margin: 0 auto;
+  overflow-x: hidden;
+  word-break: break-word;
 }
 
 .title {
@@ -30,5 +32,4 @@
     color: #ddd;
     transition: all 0.3s ease;
   }
-  
 }

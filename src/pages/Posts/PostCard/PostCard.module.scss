@@ -2,16 +2,15 @@
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  padding: 20px 10px;
-  border-radius: 16px;
-  border: 1px solid #252530;
+  border-radius: 6px;
+  border: 1px solid #e3e3e3;
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-
-  transition: background 0.2s ease;
+  transition: 0.2s;
 
   &:hover {
+    transform: translateY(-4px);
     box-shadow: 0 8px 32px rgba(139, 92, 246, 0.12);
     border-color: #8b5cf6 !important;
   }
@@ -44,6 +43,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
+  padding: 0px 5px 0px 5px;
   -webkit-box-orient: vertical;
   overflow: hidden;
   &:hover {
@@ -64,7 +64,7 @@
 
 .image {
   width: 100%;
-  height: auto;
+  height: 200px;
   object-fit: cover;
   border-radius: 6px;
   flex-shrink: 0;
@@ -72,6 +72,7 @@
 [data-theme="dark"] {
   .card {
     background-color: #18181f;
+    border: 1px solid #494949;
   }
   .title {
     color: #e5e7eb;

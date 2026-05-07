@@ -4,45 +4,28 @@ import { postCache } from "../cache/postCache.js";
 
 const PER_PAGE = 6;
 
-export function useInfinitePosts() {
-  const [filters, setFilters] = useState({
-    category: null,
-    city: null,
-  });
+const mergePosts = (prev, incoming) => {
+  const map = new Map();
+  [...prev, ...incoming].forEach((p) => map.set(p.id, p));
+  return Array.from(map.values());
+};
 
+export function useInfinitePosts(filters, debouncedSearch) {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const isFetching = useRef(false);
-
-  // LOAD CACHE WHEN FILTERS CHANGE
+  // Keep a ref to always-current filters so effects don't go stale
+  const filtersRef = useRef(filters);
   useEffect(() => {
-    const cached = postCache.get(filters);
+    filtersRef.current = filters;
+  });
 
-    if (cached?.length) {
-      setPosts(cached);
-      setPage(Math.ceil(cached.length / PER_PAGE) + 1);
-      setHasMore(true);
-    } else {
-      setPosts([]);
-      setPage(1);
-      setHasMore(true);
-    }
-  }, [filters]);
-
-  const changeFilters = (newFilters) => {
-    setFilters((prev) => ({
-      ...prev,
-      ...newFilters,
-    }));
-  };
-
-  const fetchPosts = async () => {
-    if (isFetching.current || !hasMore) return;
+  const fetchPosts = async (currentPage, currentFilters, append = false) => {
+    if (isFetching.current) return;
 
     try {
       isFetching.current = true;
@@ -50,90 +33,85 @@ export function useInfinitePosts() {
       setError(false);
 
       const data = await getFilteredPosts({
-        page,
-        category: filters.category,
-        city: filters.city,
+        page: currentPage,
+        category: currentFilters.category,
+        city: currentFilters.city,
       });
 
-      if (!Array.isArray(data) || !data.length) {
+      if (!Array.isArray(data) || data.length === 0) {
         setHasMore(false);
         return;
       }
 
-      setPosts((prev) => {
-        const map = new Map();
+      // Save to cache BEFORE setState, using currentFilters (not stale closure)
+      postCache.set(data, currentFilters, currentPage);
 
-        [...prev, ...data].forEach((p) => {
-          map.set(p.id, p);
-        });
-
-        const merged = Array.from(map.values());
-
-        postCache.set(data, filters, page);
-
-        return merged;
-      });
+      setPosts((prev) => append ? mergePosts(prev, data) : data);
 
       if (data.length < PER_PAGE) {
         setHasMore(false);
       }
     } catch (e) {
-      if (e?.response?.status === 400) {
-        setHasMore(false);
-      } else {
-        console.error(e);
-        setError(true);
-      }
+      console.error(e);
+      setError(true);
     } finally {
       setLoading(false);
       isFetching.current = false;
     }
   };
 
+  // RESET + FETCH PAGE 1 WHEN FILTERS CHANGE (check cache first)
   useEffect(() => {
-    let isMounted = true;
+    setPosts([]);
+    setPage(1);
+    setHasMore(true);
 
-    const load = async () => {
-      const cached = postCache.get(filters, page);
+    const cached = postCache.get(filters, 1);
+    if (cached?.length) {
+      setPosts(cached);
+      return;
+    }
 
-      // 1. ako postoji cache za ovu stranicu
-      if (cached?.length) {
-        setPosts((prev) => {
-          const map = new Map();
+    fetchPosts(1, filters, false);
+  }, [filters.category, filters.city]);
 
-          [...prev, ...cached].forEach((p) => {
-            map.set(p.id, p);
-          });
-
-          return Array.from(map.values());
-        });
-
-        return;
-      }
-
-      // 2. ako nema cache → fetch
-      await fetchPosts();
-    };
-
-    load();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [page, filters]);
-
+  // LOAD MORE
   const loadMore = () => {
     if (loading || !hasMore) return;
     setPage((p) => p + 1);
   };
 
+  // PAGE CHANGE TRIGGERS FETCH (page > 1 only)
+  useEffect(() => {
+    if (page === 1) return;
+
+    const currentFilters = filtersRef.current;
+    const cached = postCache.get(currentFilters, page);
+
+    if (cached?.length) {
+      setPosts((prev) => mergePosts(prev, cached));
+      return;
+    }
+
+    fetchPosts(page, currentFilters, true);
+  }, [page]);
+
+  // SEARCH FILTER (CLIENT SIDE)
+  const safePosts = Array.isArray(posts) ? posts : [];
+  const searchedPosts =
+    (debouncedSearch ?? "").trim() === ""
+      ? safePosts
+      : safePosts.filter((post) =>
+          post?.title?.rendered
+            ?.toLowerCase()
+            .includes(debouncedSearch.toLowerCase()),
+        );
+
   return {
-    posts,
+    posts: searchedPosts,
     loading,
     error,
     hasMore,
     loadMore,
-    filters,
-    changeFilters,
   };
 }

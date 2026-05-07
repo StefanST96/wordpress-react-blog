@@ -4,6 +4,7 @@ import styles from "./Navbar.module.scss";
 import { useTheme } from "../../../context/ThemeContext.jsx";
 import { Button } from "../../UI/Button/Button.jsx";
 import { useSiteSettings } from "../../../hooks/useSiteSettings";
+import localLogo from "../../../assets/biznis.png";
 
 const Navbar = () => {
   const { name, logo } = useSiteSettings();
@@ -35,10 +36,15 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={styles.wrapper}>
         {/* LOGO */}
-        <div className={styles.logo}>
-          {logo ? <img src={logo} alt="Logo" /> : null}
-          {name ? <span>{name}</span> : null}
-        </div>
+        <NavLink to="/" onClick={closeMenu}>
+          <div className={styles.logo}>
+            {logo ? (
+              <img src={logo} alt="Logo" />
+            ) : (
+              <img src={localLogo} alt="Fallback Logo" />
+            )}
+          </div>
+        </NavLink>
 
         {/* HAMBURGER */}
         <div

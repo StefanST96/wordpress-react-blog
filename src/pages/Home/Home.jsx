@@ -3,18 +3,6 @@ import styles from "./Home.module.scss";
 import LatestPosts from "../Posts/LatestPosts/LatestPosts.jsx";
 
 const Home = () => {
-  React.useEffect(() => {
-    const loadBanner = async () => {
-      try {
-        const image = await fetchBannerImage();
-        setBanner(image);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    loadBanner();
-  }, []);
 
   return (
     <div className={styles.container}>

@@ -14,10 +14,11 @@ export const getData = async (endpoint) => {
     const res = await api.get(endpoint);
     return res.data;
   } catch (err) {
-    // 400 = nema više stranica, tiho ignoriši
-    if (err?.response?.status !== 400) {
-      console.error("API error:", err);
+    // 400 = nema više stranica (WordPress REST API behavior)
+    if (err?.response?.status === 400) {
+      return [];
     }
+    console.error("API error:", err);
     throw err;
   }
 };

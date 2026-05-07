@@ -1,13 +1,33 @@
 import { useEffect, useState } from "react";
 import styles from "./LatestPosts.module.scss";
 import { getLatestPosts } from "../../../api/posts";
-import { postCache } from "../../../cache/postCache";
 import LatestPostsSkeleton from "../../../components/UI/Skeleton/LatestPostsSkeleton";
 
-const CACHE_KEY = "latest";
+const CACHE_KEY = "latest_posts_v1";
+
+const getCached = () => {
+  try {
+    const raw = sessionStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { posts, timestamp } = JSON.parse(raw);
+    if (Date.now() - timestamp > 5 * 60 * 1000) {
+      sessionStorage.removeItem(CACHE_KEY);
+      return null;
+    }
+    return posts;
+  } catch {
+    return null;
+  }
+};
+
+const setCached = (posts) => {
+  try {
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ posts, timestamp: Date.now() }));
+  } catch {}
+};
 
 const LatestPosts = () => {
-  const cachedPosts = postCache.get(CACHE_KEY);
+  const cachedPosts = getCached();
 
   const [posts, setPosts] = useState(
     Array.isArray(cachedPosts) ? cachedPosts : [],
@@ -25,8 +45,7 @@ const LatestPosts = () => {
         const safeData = Array.isArray(data) ? data : [];
 
         setPosts(safeData);
-
-        postCache.set(safeData, CACHE_KEY);
+        setCached(safeData);
       } catch (err) {
         console.error(err);
       } finally {
