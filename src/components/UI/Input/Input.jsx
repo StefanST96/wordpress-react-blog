@@ -8,7 +8,7 @@ const Input = ({
   label,
   placeholder,
   customClass,
-  type,
+  type = "text",
 }) => {
   const renderLabel = () => {
     if (!label) return null;

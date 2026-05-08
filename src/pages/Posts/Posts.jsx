@@ -5,11 +5,10 @@ import PostCard from "./PostCard/PostCard";
 import PostCardSkeleton from "../../components/UI/Skeleton/PostCardSkeleton";
 import styles from "./Posts.module.scss";
 
-import { useInfinitePosts } from "../../hooks/useInfinitePosts";
 import { useDebounce } from "../../hooks/useDebounce";
-import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import { getCategories, getCities, getFilteredPosts } from "../../api/posts";
 
-import { getCategories, getCities } from "../../api/posts";
+const PER_PAGE = 6;
 
 const Posts = () => {
   const [filters, setFilters] = useState({
@@ -19,6 +18,13 @@ const Posts = () => {
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
+
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const [categories, setCategories] = useState([]);
   const [cities, setCities] = useState([]);
@@ -30,37 +36,59 @@ const Posts = () => {
     }));
   };
 
-  const { posts, loading, error, hasMore, loadMore } = useInfinitePosts(
-    filters,
-    debouncedSearch,
-  );
-
+  // FETCH POSTS (SINGLE SOURCE OF TRUTH)
   useEffect(() => {
     const load = async () => {
-      const [c, ci] = await Promise.all([getCategories(), getCities()]);
+      try {
+        setLoading(true);
+        setError(false);
 
-      setCategories(c || []);
-      setCities(ci || []);
+        const data = await getFilteredPosts({
+          page,
+          category: filters.category,
+          city: filters.city,
+          search: debouncedSearch,
+          perPage: PER_PAGE,
+        });
+
+        if (!Array.isArray(data)) {
+          setPosts([]);
+          setHasMore(false);
+          return;
+        }
+
+        setPosts(data);
+        setHasMore(data.length === PER_PAGE);
+      } catch (e) {
+        console.error(e);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [page, filters.category, filters.city, debouncedSearch]);
+
+  // RESET PAGE ON FILTER CHANGE
+  useEffect(() => {
+    setPage(1);
+  }, [filters.category, filters.city, debouncedSearch]);
+
+  // LOAD FILTER OPTIONS
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [c, ci] = await Promise.all([getCategories(), getCities()]);
+        setCategories(c || []);
+        setCities(ci || []);
+      } catch (e) {
+        console.error(e);
+      }
     };
 
     load();
   }, []);
-
-  const isSearching = debouncedSearch.length > 0;
-
-  const lastPostRef = useInfiniteScroll(
-    isSearching ? () => {} : loadMore,
-    isSearching ? false : hasMore,
-    loading,
-  );
-
-  if (error) {
-    return (
-      <p style={{ textAlign: "center" }}>
-        Došlo je do greške prilikom učitavanja postova.
-      </p>
-    );
-  }
 
   return (
     <div className={styles.container}>
@@ -93,30 +121,63 @@ const Posts = () => {
           ]}
         />
       </div>
+
       <h1>Firme i usluge</h1>
+
+      {/* LIST */}
       {loading && posts.length === 0 ? (
         <div className={styles.list}>
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: PER_PAGE }).map((_, i) => (
             <PostCardSkeleton key={i} />
           ))}
         </div>
       ) : (
         <div className={styles.list}>
-          {posts.map((post, i) => {
-            const isLast = i === posts.length - 1;
-
-            return (
-              <div key={post.id} ref={isLast ? lastPostRef : null}>
-                <PostCard
-                  post={post}
-                  onCategoryClick={(catId) => changeFilters("category", catId)}
-                />
-              </div>
-            );
-          })}
+          {posts.map((post) => (
+            <PostCard
+              key={post.id}
+              post={post}
+              onCategoryClick={(catId) => changeFilters("category", catId)}
+            />
+          ))}
         </div>
       )}
-      {loading && <p style={{ textAlign: "center" }}>Učitavanje...</p>}
+
+      {/* PAGINATION */}
+      <div className={styles.pagination}>
+        <button
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          disabled={page === 1 || loading}
+        >
+          Prev
+        </button>
+
+        <span>Page {page}</span>
+
+        <button
+          onClick={() => {
+            if (hasMore && !loading) setPage((p) => p + 1);
+          }}
+          disabled={!hasMore || loading}
+        >
+          Next
+        </button>
+      </div>
+
+      {/* STATES */}
+      {loading && posts.length > 0 && (
+        <p style={{ textAlign: "center" }}>Učitavanje...</p>
+      )}
+
+      {!loading && posts.length === 0 && (
+        <p style={{ textAlign: "center" }}>Nema rezultata.</p>
+      )}
+
+      {error && (
+        <p style={{ textAlign: "center" }}>
+          Došlo je do greške prilikom učitavanja postova.
+        </p>
+      )}
     </div>
   );
 };

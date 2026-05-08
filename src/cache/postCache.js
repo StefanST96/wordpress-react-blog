@@ -4,57 +4,50 @@ const PREFIX = "posts_cache_";
 const getKey = (filters = {}, page = 1) => {
   const category = filters.category ?? "all";
   const city = filters.city ?? "all";
+  const search = filters.search ?? "all";
 
-  return `${PREFIX}c${category}_ct${city}_p${page}_v1`;
+  return `${PREFIX}c${category}_ct${city}_s${search}_p${page}_v1`;
 };
 
 export const postCache = {
   get(filters = {}, page = 1) {
     try {
-      const key = getKey(filters, page);
-      const raw = sessionStorage.getItem(key);
+      const raw = localStorage.getItem(getKey(filters, page));
 
       if (!raw) return null;
 
-      const { posts, timestamp } = JSON.parse(raw);
+      const parsed = JSON.parse(raw);
 
-      if (Date.now() - timestamp > TTL) {
-        sessionStorage.removeItem(key);
+      if (Date.now() > parsed.expiry) {
+        localStorage.removeItem(getKey(filters, page));
         return null;
       }
 
-      return posts;
+      return parsed.data;
     } catch {
       return null;
     }
   },
 
-  set(posts, filters = {}, page = 1) {
+  set(data, filters = {}, page = 1) {
     try {
-      const key = getKey(filters, page);
-
-      sessionStorage.setItem(
-        key,
+      localStorage.setItem(
+        getKey(filters, page),
         JSON.stringify({
-          posts: Array.isArray(posts) ? posts : [],
-          timestamp: Date.now(),
+          data,
+          expiry: Date.now() + TTL,
         }),
       );
-    } catch (err) {
-      console.error("Cache set error:", err);
-
-      // fallback ako storage pukne
-      try {
-        sessionStorage.clear();
-      } catch {}
+    } catch (e) {
+      console.warn("Cache set error:", e);
     }
   },
 
   clear() {
-    try {
-      Object.keys(sessionStorage)
-        .filter((k) => k.startsWith(PREFIX))
-        .forEach((k) => sessionStorage.removeItem(k));
-    } catch {}
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith(PREFIX)) {
+        localStorage.removeItem(key);
+      }
+    });
   },
 };

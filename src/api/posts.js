@@ -16,19 +16,73 @@ const buildPostsUrl = (customParams = {}) => {
   return `/posts?${params.toString()}`;
 };
 
+// ======================
+// POSTS BY TYPE
+// ======================
+
+// 📰 Biznis vesti
+export const getBiznisVesti = (page = 1) =>
+  getData(
+    buildPostsUrl({
+      page,
+      categories: 10,
+    }),
+  );
+
+// 💼 Posao oglasi
+export const getPosaoOglasi = (page = 1) =>
+  getData(
+    buildPostsUrl({
+      page,
+      categories: 11,
+    }),
+  );
+
+// 📦 Ostalo
+export const getOstaloPosts = (page = 1) =>
+  getData(
+    buildPostsUrl({
+      page,
+      categories_exclude: "10,11",
+    }),
+  );
+
+// ======================
+// GENERIC
+// ======================
+
 export const getPosts = (page = 1) => getData(buildPostsUrl({ page }));
 
-export const getFilteredPosts = ({ page = 1, category, city, perPage = 6 }) => {
+export const getFilteredPosts = ({
+  page = 1,
+  category,
+  city,
+  search = "",
+  perPage = 6,
+}) => {
   const params = {
     page,
     per_page: perPage,
   };
 
-  if (category !== null && category !== "all") params.categories = category;
-  if (city !== null && city !== "all") params.gradovi = city;
+  if (category && category !== "all") {
+    params.categories = category;
+  }
+
+  if (city && city !== "all") {
+    params.gradovi = city;
+  }
+
+  if (search.trim()) {
+    params.search = search;
+  }
 
   return getData(buildPostsUrl(params));
 };
+
+// ======================
+// SINGLE / EXTRA
+// ======================
 
 export const getPost = (id) => getData(`/posts/${id}?_embed`);
 

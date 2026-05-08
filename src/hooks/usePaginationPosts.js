@@ -4,17 +4,7 @@ import { postCache } from "../cache/postCache.js";
 
 const PER_PAGE = 6;
 
-const mergePosts = (prev, incoming) => {
-  const map = new Map();
-
-  [...prev, ...incoming].forEach((p) => {
-    map.set(p.id, p);
-  });
-
-  return Array.from(map.values());
-};
-
-export function useInfinitePosts(filters, debouncedSearch) {
+export function usePaginationPosts(filters, debouncedSearch) {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -23,7 +13,6 @@ export function useInfinitePosts(filters, debouncedSearch) {
 
   const isFetching = useRef(false);
 
-  // always fresh filters/search
   const filtersRef = useRef(filters);
   const searchRef = useRef(debouncedSearch);
 
@@ -32,47 +21,36 @@ export function useInfinitePosts(filters, debouncedSearch) {
     searchRef.current = debouncedSearch;
   }, [filters, debouncedSearch]);
 
-  const fetchPosts = async (
-    currentPage,
-    currentFilters,
-    currentSearch,
-    append = false,
-  ) => {
+  const fetchPosts = async (currentPage, currentFilters, currentSearch) => {
     if (isFetching.current) return;
 
     try {
       isFetching.current = true;
-
       setLoading(true);
       setError(false);
 
       const data = await getFilteredPosts({
         page: currentPage,
+        perPage: PER_PAGE,
         category: currentFilters.category,
         city: currentFilters.city,
         search: currentSearch,
       });
 
-      if (!Array.isArray(data) || data.length === 0) {
+      if (!Array.isArray(data)) {
         setHasMore(false);
         return;
       }
 
-      // cache by filters + search + page
       postCache.set(
         data,
-        {
-          ...currentFilters,
-          search: currentSearch,
-        },
+        { ...currentFilters, search: currentSearch },
         currentPage,
       );
 
-      setPosts((prev) => (append ? mergePosts(prev, data) : data));
+      setPosts(data);
 
-      if (data.length < PER_PAGE) {
-        setHasMore(false);
-      }
+      setHasMore(data.length === PER_PAGE);
     } catch (e) {
       console.error(e);
       setError(true);
@@ -82,9 +60,8 @@ export function useInfinitePosts(filters, debouncedSearch) {
     }
   };
 
-  // RESET WHEN FILTERS OR SEARCH CHANGE
+  // RESET when filters/search change
   useEffect(() => {
-    setPosts([]);
     setPage(1);
     setHasMore(true);
 
@@ -100,20 +77,11 @@ export function useInfinitePosts(filters, debouncedSearch) {
       return;
     }
 
-    fetchPosts(1, filters, debouncedSearch, false);
+    fetchPosts(1, filters, debouncedSearch);
   }, [filters.category, filters.city, debouncedSearch]);
-
-  // LOAD MORE
-  const loadMore = () => {
-    if (loading || !hasMore) return;
-
-    setPage((p) => p + 1);
-  };
 
   // PAGE CHANGE
   useEffect(() => {
-    if (page === 1) return;
-
     const currentFilters = filtersRef.current;
     const currentSearch = searchRef.current;
 
@@ -125,18 +93,29 @@ export function useInfinitePosts(filters, debouncedSearch) {
     const cached = postCache.get(cacheFilters, page);
 
     if (cached?.length) {
-      setPosts((prev) => mergePosts(prev, cached));
+      setPosts(cached);
       return;
     }
 
-    fetchPosts(page, currentFilters, currentSearch, true);
+    fetchPosts(page, currentFilters, currentSearch);
   }, [page]);
+
+  const nextPage = () => {
+    if (!loading && hasMore) setPage((p) => p + 1);
+  };
+
+  const prevPage = () => {
+    if (page > 1) setPage((p) => p - 1);
+  };
 
   return {
     posts,
+    page,
     loading,
     error,
     hasMore,
-    loadMore,
+    nextPage,
+    prevPage,
+    setPage,
   };
 }
