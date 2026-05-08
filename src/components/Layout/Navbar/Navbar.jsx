@@ -79,15 +79,13 @@ const Navbar = () => {
           </NavLink>
 
           <NavLink
-            to="/posts"
+            to="/poslovni-adresar"
             onClick={closeMenu}
-            className={() =>
-              isPostsActive
-                ? `${styles.navLink} ${styles.active}`
-                : styles.navLink
+            className={({ isActive }) =>
+              isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
             }
           >
-            Biznis Adresar
+            Poslovni Adresar
           </NavLink>
 
           <NavLink

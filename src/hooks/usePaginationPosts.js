@@ -5,14 +5,16 @@ import { postCache } from "../cache/postCache.js";
 const PER_PAGE = 6;
 
 export function usePaginationPosts(filters, debouncedSearch) {
-  const [posts, setPosts] = useState([]);
+  const initialCacheKey = { ...filters, search: debouncedSearch };
+  const initialCached = postCache.get(initialCacheKey, 1);
+
+  const [posts, setPosts] = useState(initialCached ?? []);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(!initialCached);
   const [error, setError] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const isFetching = useRef(false);
-
   const filtersRef = useRef(filters);
   const searchRef = useRef(debouncedSearch);
 
@@ -42,14 +44,8 @@ export function usePaginationPosts(filters, debouncedSearch) {
         return;
       }
 
-      postCache.set(
-        data,
-        { ...currentFilters, search: currentSearch },
-        currentPage,
-      );
-
+      postCache.set(data, { ...currentFilters, search: currentSearch }, currentPage);
       setPosts(data);
-
       setHasMore(data.length === PER_PAGE);
     } catch (e) {
       console.error(e);
@@ -65,15 +61,11 @@ export function usePaginationPosts(filters, debouncedSearch) {
     setPage(1);
     setHasMore(true);
 
-    const cacheFilters = {
-      ...filters,
-      search: debouncedSearch,
-    };
-
-    const cached = postCache.get(cacheFilters, 1);
+    const cached = postCache.get({ ...filters, search: debouncedSearch }, 1);
 
     if (cached?.length) {
       setPosts(cached);
+      setLoading(false);
       return;
     }
 
@@ -85,37 +77,19 @@ export function usePaginationPosts(filters, debouncedSearch) {
     const currentFilters = filtersRef.current;
     const currentSearch = searchRef.current;
 
-    const cacheFilters = {
-      ...currentFilters,
-      search: currentSearch,
-    };
-
-    const cached = postCache.get(cacheFilters, page);
+    const cached = postCache.get({ ...currentFilters, search: currentSearch }, page);
 
     if (cached?.length) {
       setPosts(cached);
+      setLoading(false);
       return;
     }
 
     fetchPosts(page, currentFilters, currentSearch);
   }, [page]);
 
-  const nextPage = () => {
-    if (!loading && hasMore) setPage((p) => p + 1);
-  };
+  const nextPage = () => { if (!loading && hasMore) setPage((p) => p + 1); };
+  const prevPage = () => { if (page > 1) setPage((p) => p - 1); };
 
-  const prevPage = () => {
-    if (page > 1) setPage((p) => p - 1);
-  };
-
-  return {
-    posts,
-    page,
-    loading,
-    error,
-    hasMore,
-    nextPage,
-    prevPage,
-    setPage,
-  };
+  return { posts, page, loading, error, hasMore, nextPage, prevPage, setPage };
 }

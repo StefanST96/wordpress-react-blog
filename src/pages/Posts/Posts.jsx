@@ -6,7 +6,8 @@ import PostCardSkeleton from "../../components/UI/Skeleton/PostCardSkeleton";
 import styles from "./Posts.module.scss";
 
 import { useDebounce } from "../../hooks/useDebounce";
-import { getCategories, getCities, getFilteredPosts } from "../../api/posts";
+import { usePaginationPosts } from "../../hooks/usePaginationPosts";
+import { getCategories, getCities } from "../../api/posts";
 
 const PER_PAGE = 6;
 
@@ -19,15 +20,11 @@ const Posts = () => {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
 
-  const [posts, setPosts] = useState([]);
-  const [page, setPage] = useState(1);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-
   const [categories, setCategories] = useState([]);
   const [cities, setCities] = useState([]);
+
+  const { posts, page, loading, error, hasMore, nextPage, prevPage } =
+    usePaginationPosts(filters, debouncedSearch);
 
   const changeFilters = (key, value) => {
     setFilters((prev) => ({
@@ -36,46 +33,6 @@ const Posts = () => {
     }));
   };
 
-  // FETCH POSTS (SINGLE SOURCE OF TRUTH)
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError(false);
-
-        const data = await getFilteredPosts({
-          page,
-          category: filters.category,
-          city: filters.city,
-          search: debouncedSearch,
-          perPage: PER_PAGE,
-        });
-
-        if (!Array.isArray(data)) {
-          setPosts([]);
-          setHasMore(false);
-          return;
-        }
-
-        setPosts(data);
-        setHasMore(data.length === PER_PAGE);
-      } catch (e) {
-        console.error(e);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    load();
-  }, [page, filters.category, filters.city, debouncedSearch]);
-
-  // RESET PAGE ON FILTER CHANGE
-  useEffect(() => {
-    setPage(1);
-  }, [filters.category, filters.city, debouncedSearch]);
-
-  // LOAD FILTER OPTIONS
   useEffect(() => {
     const load = async () => {
       try {
@@ -86,7 +43,6 @@ const Posts = () => {
         console.error(e);
       }
     };
-
     load();
   }, []);
 
@@ -124,7 +80,6 @@ const Posts = () => {
 
       <h1>Firme i usluge</h1>
 
-      {/* LIST */}
       {loading && posts.length === 0 ? (
         <div className={styles.list}>
           {Array.from({ length: PER_PAGE }).map((_, i) => (
@@ -143,41 +98,15 @@ const Posts = () => {
         </div>
       )}
 
-      {/* PAGINATION */}
       <div className={styles.pagination}>
-        <button
-          onClick={() => setPage((p) => Math.max(p - 1, 1))}
-          disabled={page === 1 || loading}
-        >
-          Prev
-        </button>
-
+        <button onClick={prevPage} disabled={page === 1 || loading}>Prev</button>
         <span>Page {page}</span>
-
-        <button
-          onClick={() => {
-            if (hasMore && !loading) setPage((p) => p + 1);
-          }}
-          disabled={!hasMore || loading}
-        >
-          Next
-        </button>
+        <button onClick={nextPage} disabled={!hasMore || loading}>Next</button>
       </div>
 
-      {/* STATES */}
-      {loading && posts.length > 0 && (
-        <p style={{ textAlign: "center" }}>Učitavanje...</p>
-      )}
-
-      {!loading && posts.length === 0 && (
-        <p style={{ textAlign: "center" }}>Nema rezultata.</p>
-      )}
-
-      {error && (
-        <p style={{ textAlign: "center" }}>
-          Došlo je do greške prilikom učitavanja postova.
-        </p>
-      )}
+      {loading && posts.length > 0 && <p style={{ textAlign: "center" }}>Učitavanje...</p>}
+      {!loading && posts.length === 0 && <p style={{ textAlign: "center" }}>Nema rezultata.</p>}
+      {error && <p style={{ textAlign: "center" }}>Došlo je do greške prilikom učitavanja postova.</p>}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { getData } from "../services/request";
 
 const DEFAULT_POST_PARAMS = {
-  _embed: true,
+  _embed: 1,
   per_page: 6,
   orderby: "date",
   order: "desc",
@@ -25,7 +25,7 @@ export const getBiznisVesti = (page = 1) =>
   getData(
     buildPostsUrl({
       page,
-      categories: 10,
+      categories: 2857,
     }),
   );
 
@@ -34,7 +34,7 @@ export const getPosaoOglasi = (page = 1) =>
   getData(
     buildPostsUrl({
       page,
-      categories: 11,
+      categories: 2855,
     }),
   );
 
@@ -91,3 +91,6 @@ export const getCities = () => getData("/gradovi?per_page=100");
 export const getCategories = () => getData("/categories?per_page=100");
 
 export const getLatestPosts = () => getData(buildPostsUrl({ per_page: 3 }));
+
+export const getMediaByIds = (ids = []) =>
+  getData(`/media?include=${ids.join(",")}&per_page=100`);

@@ -5,6 +5,7 @@ import Posts from "../pages/Posts/Posts";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
 import Post from "../pages/Posts/Post/Post";
+import Directory from "../pages/Directory/Directory";
 
 const AppRoutes = () => {
   return (
@@ -14,6 +15,7 @@ const AppRoutes = () => {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/post/:id" element={<Post />} />
+      <Route path="/poslovni-adresar" element={<Directory />} />
     </Routes>
   );
 };
