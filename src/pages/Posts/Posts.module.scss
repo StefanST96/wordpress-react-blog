@@ -1,12 +1,12 @@
 .container {
-  padding: 0rem 2rem;
-  max-width: 1024px;
+  padding: 0 2rem 4rem;
+  // max-width: 1024px;
   margin: 0 auto;
 
   .filter {
     display: flex;
     justify-content: space-around;
-    background-color: #8da7e8;
+    background-color: #eaeaea;
     padding-top: 16px;
     border-radius: 0px 0px 24px 24px;
   }

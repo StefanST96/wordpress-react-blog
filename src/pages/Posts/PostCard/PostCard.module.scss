@@ -3,7 +3,7 @@
   justify-content: space-between;
   gap: 20px;
   border-radius: 6px;
-  border: 1px solid #e3e3e3;
+  background-color: var(--card);
   cursor: pointer;
   text-decoration: none;
   color: inherit;
@@ -12,7 +12,6 @@
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 32px rgba(139, 92, 246, 0.12);
-    border-color: #1e74bd !important;
   }
 }
 
@@ -20,7 +19,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .metaTop {
@@ -66,13 +64,12 @@
   width: 100%;
   height: 200px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 6px 6px 0px 0px;
   flex-shrink: 0;
 }
 [data-theme="dark"] {
   .card {
     background-color: #18181f;
-    border: 1px solid #494949;
   }
   .title {
     color: #e5e7eb;

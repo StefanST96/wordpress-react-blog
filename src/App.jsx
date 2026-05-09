@@ -6,6 +6,7 @@ import { ThemeProvider } from "./context/ThemeContext.jsx";
 import Footer from "./components/Layout/Footer/Footer.jsx";
 import { getSiteSettings } from "./api/site";
 import { siteCache } from "./cache/siteCache";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const cached = siteCache.get();
@@ -31,6 +32,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
+        <ScrollToTop />
         <Navbar name={site.name} logo={site.logo} />
 
         <AppRoutes />

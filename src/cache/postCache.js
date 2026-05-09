@@ -24,22 +24,62 @@ export const postCache = {
       }
 
       return parsed.data;
-    } catch {
+    } catch (e) {
+      console.warn("Cache read error:", e);
       return null;
     }
   },
 
   set(data, filters = {}, page = 1) {
     try {
+      // OPTIMIZACIJA PODATAKA
+      const optimizedData = data.map((post) => ({
+        id: post.id,
+        slug: post.slug,
+        date: post.date,
+
+        title: {
+          rendered: post.title?.rendered || "",
+        },
+
+        excerpt: {
+          rendered: post.excerpt?.rendered || "",
+        },
+
+        categories: post.categories || [],
+
+        _embedded: {
+          "wp:featuredmedia":
+            post._embedded?.["wp:featuredmedia"]?.map((m) => ({
+              source_url: m.source_url,
+            })) || [],
+        },
+      }));
+
       localStorage.setItem(
         getKey(filters, page),
         JSON.stringify({
-          data,
+          data: optimizedData,
           expiry: Date.now() + TTL,
         }),
       );
     } catch (e) {
       console.warn("Cache set error:", e);
+
+      // STORAGE PUN
+      if (e.name === "QuotaExceededError") {
+        this.clear();
+
+        try {
+          localStorage.setItem(
+            getKey(filters, page),
+            JSON.stringify({
+              data,
+              expiry: Date.now() + TTL,
+            }),
+          );
+        } catch {}
+      }
     }
   },
 

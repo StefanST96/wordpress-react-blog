@@ -1,3 +1,4 @@
+
 * {
   box-sizing: border-box;
 }
@@ -10,9 +11,9 @@ h1, h2, h3 {
   letter-spacing: -0.02em;
 }
 :root {
-  --bg: #ffffff;
+  --bg: #f5f5f7;
   --text: #0d0d12;
-  --card: #f5f5f5;
+  --card: #fff;
 }
 
 [data-theme="dark"] {

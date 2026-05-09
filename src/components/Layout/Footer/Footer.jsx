@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "./Footer.module.scss";
 import { getSiteSettings } from "../../../api/site";
 import { useSiteSettings } from "../../../hooks/useSiteSettings";
+import localLogo from "../../../assets/biznis.png";
 
 const Footer = () => {
   const { name, logo } = useSiteSettings();
@@ -15,18 +16,26 @@ const Footer = () => {
           {/* BRAND */}
           <div className={styles.brand}>
             <div className={styles.logo}>
-              {logo ? <img src={logo} alt="Logo" /> : null}
-              {name ? <span>{name}</span> : null}
+              {logo ? (
+                <img src={logo} alt="Logo" />
+              ) : (
+                <img src={localLogo} alt="Fallback Logo" />
+              )}
             </div>
-
+            <h3>O nama</h3>
             <p className={styles.description}>
-              Modern React & WordPress blog platform with responsive design,
-              categories, search and infinite scrolling posts.
+              Biznisklub.rs je poslovni portal Srbije, gde možete pronaći
+              poslovnog partnera, robu ili uslugu. Kao i informacije o firmama u
+              regionu
+            </p>
+            <p className={styles.description}>
+              Kontakt:{" "}
+              <a href="mailto:office@biznisklub.rs">office@biznisklub.rs</a>
             </p>
           </div>
 
           {/* NAVIGATION */}
-          <div className={styles.links}>
+          {/* <div className={styles.links}>
             <h3>Navigation</h3>
 
             <ul>
@@ -42,11 +51,11 @@ const Footer = () => {
                 <Link to="/about">About</Link>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* SOCIAL */}
-          <div className={styles.links}>
-            <h3>Follow</h3>
+          {/* <div className={styles.links}> 
+             <h3>Follow</h3>
 
             <ul>
               <li>
@@ -77,12 +86,13 @@ const Footer = () => {
                 </a>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         <div className={styles.bottom}>
           <p>
-            © {currentYear} {name || "React & WordPress"}. All rights reserved.
+            © {currentYear} {name || "React & WordPress"}. Business media
+            consulting.
           </p>
         </div>
       </div>

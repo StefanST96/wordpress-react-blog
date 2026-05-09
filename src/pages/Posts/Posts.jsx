@@ -9,7 +9,7 @@ import { useDebounce } from "../../hooks/useDebounce";
 import { usePaginationPosts } from "../../hooks/usePaginationPosts";
 import { getCategories, getCities } from "../../api/posts";
 
-const PER_PAGE = 6;
+const PER_PAGE = 12;
 
 const Posts = () => {
   const [filters, setFilters] = useState({
@@ -99,14 +99,26 @@ const Posts = () => {
       )}
 
       <div className={styles.pagination}>
-        <button onClick={prevPage} disabled={page === 1 || loading}>Prev</button>
+        <button onClick={prevPage} disabled={page === 1 || loading}>
+          Prev
+        </button>
         <span>Page {page}</span>
-        <button onClick={nextPage} disabled={!hasMore || loading}>Next</button>
+        <button onClick={nextPage} disabled={!hasMore || loading}>
+          Next
+        </button>
       </div>
 
-      {loading && posts.length > 0 && <p style={{ textAlign: "center" }}>Učitavanje...</p>}
-      {!loading && posts.length === 0 && <p style={{ textAlign: "center" }}>Nema rezultata.</p>}
-      {error && <p style={{ textAlign: "center" }}>Došlo je do greške prilikom učitavanja postova.</p>}
+      {loading && posts.length > 0 && (
+        <p style={{ textAlign: "center" }}>Učitavanje...</p>
+      )}
+      {!loading && posts.length === 0 && (
+        <p style={{ textAlign: "center" }}>Nema rezultata.</p>
+      )}
+      {error && (
+        <p style={{ textAlign: "center" }}>
+          Došlo je do greške prilikom učitavanja postova.
+        </p>
+      )}
     </div>
   );
 };

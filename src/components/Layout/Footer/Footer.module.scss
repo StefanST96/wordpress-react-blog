@@ -1,6 +1,6 @@
 .footer {
   margin-top: 80px;
-  background: #8b8b8b;
+  background: #1b1b1b;
   color: #fff;
   padding: 60px 20px 20px;
 }
@@ -40,6 +40,7 @@
   transition:
     transform 0.2s ease,
     opacity 0.2s ease;
+  filter: brightness(0) invert(1);
 }
 
 .logo span {
@@ -55,6 +56,11 @@
   line-height: 1.7;
   color: #ffffff;
   font-size: 14px;
+  a {
+    color: #1e74bd;
+    text-decoration: none;
+    transition: 0.2s ease;
+  }
 }
 
 /* LINKS */

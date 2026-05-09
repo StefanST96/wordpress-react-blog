@@ -2,7 +2,32 @@ import { useEffect, useRef, useState } from "react";
 import { getFilteredPosts } from "../api/posts";
 import { postCache } from "../cache/postCache.js";
 
-const PER_PAGE = 6;
+const PER_PAGE = 12;
+
+const optimizePosts = (data = []) => {
+  return data.map((post) => ({
+    id: post.id,
+    slug: post.slug,
+    date: post.date,
+
+    title: {
+      rendered: post.title?.rendered || "",
+    },
+
+    excerpt: {
+      rendered: post.excerpt?.rendered || "",
+    },
+
+    categories: post.categories || [],
+
+    _embedded: {
+      "wp:featuredmedia":
+        post._embedded?.["wp:featuredmedia"]?.map((m) => ({
+          source_url: m.source_url,
+        })) || [],
+    },
+  }));
+};
 
 const mergePosts = (prev, incoming) => {
   const map = new Map();
@@ -23,7 +48,6 @@ export function useInfinitePosts(filters, debouncedSearch) {
 
   const isFetching = useRef(false);
 
-  // always fresh filters/search
   const filtersRef = useRef(filters);
   const searchRef = useRef(debouncedSearch);
 
@@ -48,6 +72,7 @@ export function useInfinitePosts(filters, debouncedSearch) {
 
       const data = await getFilteredPosts({
         page: currentPage,
+        perPage: PER_PAGE,
         category: currentFilters.category,
         city: currentFilters.city,
         search: currentSearch,
@@ -58,9 +83,10 @@ export function useInfinitePosts(filters, debouncedSearch) {
         return;
       }
 
-      // cache by filters + search + page
+      const optimized = optimizePosts(data);
+
       postCache.set(
-        data,
+        optimized,
         {
           ...currentFilters,
           search: currentSearch,
@@ -68,11 +94,9 @@ export function useInfinitePosts(filters, debouncedSearch) {
         currentPage,
       );
 
-      setPosts((prev) => (append ? mergePosts(prev, data) : data));
+      setPosts((prev) => (append ? mergePosts(prev, optimized) : optimized));
 
-      if (data.length < PER_PAGE) {
-        setHasMore(false);
-      }
+      setHasMore(data.length === PER_PAGE);
     } catch (e) {
       console.error(e);
       setError(true);

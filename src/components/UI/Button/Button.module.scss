@@ -57,12 +57,13 @@
   &.dark {
     background-color: #fff;
     border: 1px solid #555;
-    box-shadow: inset 26px 0 8px -8px #18181f;
     transition: 0.5s;
+    border-radius: 24px;
     &:hover {
       background-color: #18181f;
       color: #fff;
-      box-shadow: inset 26px 0 8px -8px #fff;
+      padding-left: 36px;
+      box-shadow: inset 26px 0px 0px 0px #fff;
     }
   }
 }
@@ -72,11 +73,10 @@
     &.dark {
       background-color: #18181f;
       color: #fff;
-      box-shadow: inset 26px 0 8px -8px #fff;
       &:hover {
         background-color: #fff;
         color: #444;
-        box-shadow: inset 26px 0 8px -8px #18181f;
+        box-shadow: inset 26px 0px 0px 0px #18181f;
       }
     }
   }

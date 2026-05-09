@@ -2,7 +2,32 @@ import { useEffect, useRef, useState } from "react";
 import { getFilteredPosts } from "../api/posts";
 import { postCache } from "../cache/postCache.js";
 
-const PER_PAGE = 6;
+const PER_PAGE = 12;
+
+const optimizePosts = (data = []) => {
+  return data.map((post) => ({
+    id: post.id,
+    slug: post.slug,
+    date: post.date,
+
+    title: {
+      rendered: post.title?.rendered || "",
+    },
+
+    excerpt: {
+      rendered: post.excerpt?.rendered || "",
+    },
+
+    categories: post.categories || [],
+
+    _embedded: {
+      "wp:featuredmedia":
+        post._embedded?.["wp:featuredmedia"]?.map((m) => ({
+          source_url: m.source_url,
+        })) || [],
+    },
+  }));
+};
 
 export function usePaginationPosts(filters, debouncedSearch) {
   const initialCacheKey = { ...filters, search: debouncedSearch };
@@ -15,6 +40,8 @@ export function usePaginationPosts(filters, debouncedSearch) {
   const [hasMore, setHasMore] = useState(true);
 
   const isFetching = useRef(false);
+  const mounted = useRef(false);
+
   const filtersRef = useRef(filters);
   const searchRef = useRef(debouncedSearch);
 
@@ -28,6 +55,7 @@ export function usePaginationPosts(filters, debouncedSearch) {
 
     try {
       isFetching.current = true;
+
       setLoading(true);
       setError(false);
 
@@ -44,8 +72,16 @@ export function usePaginationPosts(filters, debouncedSearch) {
         return;
       }
 
-      postCache.set(data, { ...currentFilters, search: currentSearch }, currentPage);
-      setPosts(data);
+      const optimized = optimizePosts(data);
+
+      postCache.set(
+        optimized,
+        { ...currentFilters, search: currentSearch },
+        currentPage,
+      );
+
+      setPosts(optimized);
+
       setHasMore(data.length === PER_PAGE);
     } catch (e) {
       console.error(e);
@@ -56,12 +92,17 @@ export function usePaginationPosts(filters, debouncedSearch) {
     }
   };
 
-  // RESET when filters/search change
+  // FILTER / SEARCH CHANGE
   useEffect(() => {
     setPage(1);
     setHasMore(true);
 
-    const cached = postCache.get({ ...filters, search: debouncedSearch }, 1);
+    const cacheKey = {
+      ...filters,
+      search: debouncedSearch,
+    };
+
+    const cached = postCache.get(cacheKey, 1);
 
     if (cached?.length) {
       setPosts(cached);
@@ -74,10 +115,21 @@ export function usePaginationPosts(filters, debouncedSearch) {
 
   // PAGE CHANGE
   useEffect(() => {
+    // spreči dupli fetch na mount-u
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+
     const currentFilters = filtersRef.current;
     const currentSearch = searchRef.current;
 
-    const cached = postCache.get({ ...currentFilters, search: currentSearch }, page);
+    const cacheKey = {
+      ...currentFilters,
+      search: currentSearch,
+    };
+
+    const cached = postCache.get(cacheKey, page);
 
     if (cached?.length) {
       setPosts(cached);
@@ -88,8 +140,26 @@ export function usePaginationPosts(filters, debouncedSearch) {
     fetchPosts(page, currentFilters, currentSearch);
   }, [page]);
 
-  const nextPage = () => { if (!loading && hasMore) setPage((p) => p + 1); };
-  const prevPage = () => { if (page > 1) setPage((p) => p - 1); };
+  const nextPage = () => {
+    if (!loading && hasMore) {
+      setPage((p) => p + 1);
+    }
+  };
 
-  return { posts, page, loading, error, hasMore, nextPage, prevPage, setPage };
+  const prevPage = () => {
+    if (page > 1 && !loading) {
+      setPage((p) => p - 1);
+    }
+  };
+
+  return {
+    posts,
+    page,
+    loading,
+    error,
+    hasMore,
+    nextPage,
+    prevPage,
+    setPage,
+  };
 }

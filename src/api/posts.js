@@ -2,7 +2,7 @@ import { getData } from "../services/request";
 
 const DEFAULT_POST_PARAMS = {
   _embed: 1,
-  per_page: 6,
+  per_page: 12,
   orderby: "date",
   order: "desc",
 };
@@ -58,7 +58,7 @@ export const getFilteredPosts = ({
   category,
   city,
   search = "",
-  perPage = 6,
+  perPage = 12,
 }) => {
   const params = {
     page,
