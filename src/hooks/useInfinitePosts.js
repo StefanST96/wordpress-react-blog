@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { getFilteredPosts } from "../api/posts";
 import { postCache } from "../cache/postCache.js";
 
-const PER_PAGE = 12;
+const PER_PAGE = 14;
 
 const optimizePosts = (data = []) => {
   return data.map((post) => ({

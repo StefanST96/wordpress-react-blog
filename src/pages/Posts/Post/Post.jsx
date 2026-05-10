@@ -110,13 +110,13 @@ const Post = () => {
         dangerouslySetInnerHTML={{ __html: post.title.rendered }}
       />
 
-      {post._embedded?.["wp:featuredmedia"]?.[0]?.source_url && (
+      {/* {post._embedded?.["wp:featuredmedia"]?.[0]?.source_url && (
         <img
           className={styles.image}
           src={post._embedded["wp:featuredmedia"][0].source_url}
           alt={post.title.rendered}
         />
-      )}
+      )} */}
 
       <div className={styles.content}>
         {parts.map((part, i) => (

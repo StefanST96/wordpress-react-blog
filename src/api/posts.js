@@ -2,7 +2,7 @@ import { getData } from "../services/request";
 
 const DEFAULT_POST_PARAMS = {
   _embed: 1,
-  per_page: 12,
+  per_page: 14,
   orderby: "date",
   order: "desc",
 };

@@ -5,7 +5,7 @@ import PostCardSkeleton from "../../components/UI/Skeleton/PostCardSkeleton";
 import styles from "./Directory.module.scss";
 import { getPosts, getBiznisVesti, getPosaoOglasi } from "../../api/posts";
 
-const SECTION_COUNT = 8;
+const SECTION_COUNT = 14;
 const TTL = 5 * 60 * 1000;
 
 // Jednostavan session cache specifican za PoslovniAdresar

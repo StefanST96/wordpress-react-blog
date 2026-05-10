@@ -9,7 +9,7 @@ import { useDebounce } from "../../hooks/useDebounce";
 import { usePaginationPosts } from "../../hooks/usePaginationPosts";
 import { getCategories, getCities } from "../../api/posts";
 
-const PER_PAGE = 12;
+const PER_PAGE = 14;
 
 const Posts = () => {
   const [filters, setFilters] = useState({
