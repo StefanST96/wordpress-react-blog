@@ -2,31 +2,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import styles from "./PostCard.module.scss";
+import { MapPin } from "lucide-react";
 
 const PostCard = ({ post, onCategoryClick }) => {
   const image =
     post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "/fallback.svg";
 
+  const cities = post._embedded?.["wp:term"]?.[2] || [];
   const categories = post._embedded?.["wp:term"]?.[0] || [];
 
   return (
     <Link to={`/post/${post.id}`} className={styles.card}>
       <div className={styles.content}>
-        {/* <div className={styles.metaTop}>
-          {categories.map((cat) => (
-            <span
-              key={cat.id}
-              className={styles.category}
-              onClick={(e) => {
-                e.preventDefault(); // ne triggeruje Link navigaciju
-                e.stopPropagation();
-                onCategoryClick(cat.id);
-              }}
-            >
-              {cat.name}
-            </span>
-          ))}
-        </div> */}
         <img src={image} alt="" className={styles.image} />
         <h4
           className={styles.title}
@@ -46,6 +33,32 @@ const PostCard = ({ post, onCategoryClick }) => {
             })}
           </span>
         </div> */}
+
+        <div className={styles.cities}>
+          {cities.length > 0 && (
+            <span className={styles.city}>
+              <MapPin size={14} /> {cities[0].name}
+            </span>
+          )}
+        </div>
+
+        <div className={styles.metaTop}>
+          {categories.length > 0 && (
+            <span
+              className={styles.category}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const lastCategory = categories[categories.length - 1];
+
+                onCategoryClick(lastCategory.id);
+              }}
+            >
+              {categories[categories.length - 1].name}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );

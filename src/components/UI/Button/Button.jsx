@@ -11,8 +11,11 @@ const Button = ({
   onClick,
   title,
   dark,
+  pageButton,
+  navButton,
+  active,
 }) => {
-  const classes = `${success ? styles.success : ""} ${warning ? styles.warning : ""} ${danger ? styles.danger : ""} ${small ? styles.small : ""}${search ? styles.search : ""} ${dark ? styles.dark : ""}
+  const classes = `${success ? styles.success : ""} ${warning ? styles.warning : ""} ${danger ? styles.danger : ""} ${small ? styles.small : ""}${search ? styles.search : ""} ${dark ? styles.dark : ""} ${pageButton ? styles.pageButton : ""} ${navButton ? styles.navButton : ""} ${active ? styles.active : ""} 
   `;
 
   return (
@@ -36,6 +39,9 @@ Button.propTypes = {
   onClick: PropTypes.func,
   title: PropTypes.string,
   dark: PropTypes.bool,
+  pageButton: PropTypes.bool,
+  navButton: PropTypes.bool,
+  active: PropTypes.bool,
 };
 
 export { Button };

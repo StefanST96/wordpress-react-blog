@@ -5,6 +5,7 @@ import { useTheme } from "../../../context/ThemeContext.jsx";
 import { Button } from "../../UI/Button/Button.jsx";
 import { useSiteSettings } from "../../../hooks/useSiteSettings";
 import localLogo from "../../../assets/biznis.png";
+import { Sun, MoonStar } from "lucide-react";
 
 const Navbar = () => {
   const { name, logo } = useSiteSettings();
@@ -110,7 +111,13 @@ const Navbar = () => {
 
           <Button
             onClick={toggleTheme}
-            title={theme === "light" ? "Dark" : "Light"}
+            title={
+              theme === "light" ? (
+                <MoonStar size={16} strokeWidth={1.25} />
+              ) : (
+                <Sun size={16} strokeWidth={1.25} />
+              )
+            }
             dark
           />
         </div>

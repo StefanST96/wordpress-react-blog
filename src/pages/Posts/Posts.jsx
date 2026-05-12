@@ -5,11 +5,12 @@ import PostCard from "./PostCard/PostCard";
 import PostCardSkeleton from "../../components/UI/Skeleton/PostCardSkeleton";
 import styles from "./Posts.module.scss";
 
+import { Search } from "lucide-react";
 import { useDebounce } from "../../hooks/useDebounce";
 import { usePaginationPosts } from "../../hooks/usePaginationPosts";
 import { getCategories, getCities } from "../../api/posts";
-
-const PER_PAGE = 14;
+import { Button } from "../../components/UI/Button/Button";
+import heroImage from "../../assets/hero.png";
 
 const Posts = () => {
   const [filters, setFilters] = useState({
@@ -23,7 +24,7 @@ const Posts = () => {
   const [categories, setCategories] = useState([]);
   const [cities, setCities] = useState([]);
 
-  const { posts, page, loading, error, hasMore, nextPage, prevPage } =
+  const { posts, page, setPage, loading, error, hasMore, PER_PAGE } =
     usePaginationPosts(filters, debouncedSearch);
 
   const changeFilters = (key, value) => {
@@ -31,55 +32,144 @@ const Posts = () => {
       ...prev,
       [key]: value,
     }));
+
+    setPage(1);
   };
 
   useEffect(() => {
     const load = async () => {
       try {
         const [c, ci] = await Promise.all([getCategories(), getCities()]);
+
         setCategories(c || []);
         setCities(ci || []);
       } catch (e) {
         console.error(e);
       }
     };
+
     load();
   }, []);
 
+  const getPagination = (current, total) => {
+    const delta = 1;
+
+    const range = [];
+    const rangeWithDots = [];
+
+    let left = current - delta;
+    let right = current + delta;
+
+    for (let i = 1; i <= total; i++) {
+      if (i === 1 || i === total || (i >= left && i <= right)) {
+        range.push(i);
+      }
+    }
+
+    let prev;
+
+    for (let i of range) {
+      if (prev) {
+        if (i - prev === 2) {
+          rangeWithDots.push(prev + 1);
+        } else if (i - prev !== 1) {
+          rangeWithDots.push("...");
+        }
+      }
+
+      rangeWithDots.push(i);
+      prev = i;
+    }
+
+    return rangeWithDots;
+  };
+
+  const totalPages = hasMore ? page + 1 : page;
+
   return (
     <div className={styles.container}>
-      <div className={styles.filter}>
-        <Input value={search} onChange={setSearch} placeholder="Pretraga..." />
+      {/* HERO */}
+      <div className={styles.hero}>
+        <img src={heroImage} alt="Biznis Klub" className={styles.heroImage} />
 
-        <Select
-          value={filters.category}
-          onChange={(v) => changeFilters("category", v)}
-          options={[
-            { id: "all", label: "Sve kategorije", value: "all" },
-            ...categories.map((c) => ({
-              id: c.id,
-              label: `${c.parent ? "— " : ""}${c.name}`,
-              value: c.id,
-            })),
-          ]}
-        />
+        <div className={styles.overlay}>
+          <div className={styles.heroContent}>
+            <span className={styles.badge}>Poslovni adresar Srbije</span>
 
-        <Select
-          value={filters.city}
-          onChange={(v) => changeFilters("city", v)}
-          options={[
-            { id: "all", label: "Svi gradovi", value: "all" },
-            ...cities.map((c) => ({
-              id: c.id,
-              label: c.name,
-              value: c.id,
-            })),
-          ]}
-        />
+            <h1 className={styles.heroTitle}>
+              Pronađite najbolje firme i usluge
+            </h1>
+
+            <p className={styles.heroText}>
+              Brzo i lako pronađite firme i kvalitetne usluge u vašem gradu.
+            </p>
+
+            {/* HERO SEARCH */}
+            <div className={styles.heroSearch}>
+              <Search className={styles.searchIcon} />
+              <Input
+                value={search}
+                onChange={setSearch}
+                placeholder="Pretraga firmi i usluga..."
+              />
+
+              <Select
+                value={filters.category}
+                onChange={(v) => changeFilters("category", v)}
+                options={[
+                  {
+                    id: "all",
+                    label: "Sve kategorije",
+                    value: "all",
+                  },
+
+                  ...categories.map((c) => ({
+                    id: c.id,
+                    label: `${c.parent ? "— " : ""}${c.name}`,
+                    value: c.id,
+                  })),
+                ]}
+              />
+
+              <Select
+                value={filters.city}
+                onChange={(v) => changeFilters("city", v)}
+                options={[
+                  {
+                    id: "all",
+                    label: "Svi gradovi",
+                    value: "all",
+                  },
+
+                  ...cities.map((c) => ({
+                    id: c.id,
+                    label: c.name,
+                    value: c.id,
+                  })),
+                ]}
+              />
+            </div>
+
+            {/* QUICK CATEGORIES */}
+            <div className={styles.quickCategories}>
+              {categories
+                .filter((c) => c.parent !== 0)
+                .slice(0, 8)
+                .map((cat) => (
+                  <button
+                    key={cat.id}
+                    className={styles.quickCategory}
+                    onClick={() => changeFilters("category", cat.id)}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <h1>Firme i usluge</h1>
-
+      {/* LISTA */}
       {loading && posts.length === 0 ? (
         <div className={styles.list}>
           {Array.from({ length: PER_PAGE }).map((_, i) => (
@@ -89,35 +179,60 @@ const Posts = () => {
       ) : (
         <div className={styles.list}>
           {posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              onCategoryClick={(catId) => changeFilters("category", catId)}
-            />
+            <PostCard key={post.id} post={post} />
           ))}
         </div>
       )}
 
+      {/* PAGINATION */}
       <div className={styles.pagination}>
-        <button onClick={prevPage} disabled={page === 1 || loading}>
-          Prev
-        </button>
-        <span>Page {page}</span>
-        <button onClick={nextPage} disabled={!hasMore || loading}>
-          Next
-        </button>
+        <Button
+          navButton
+          title="Prethodna"
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1 || loading}
+        />
+
+        {getPagination(page, totalPages).map((item, index) => {
+          if (item === "...") {
+            return (
+              <span key={index} className={styles.dots}>
+                ...
+              </span>
+            );
+          }
+
+          return (
+            <Button
+              key={index}
+              pageButton
+              title={item}
+              active={page === item}
+              onClick={() => setPage(item)}
+              disabled={loading}
+            />
+          );
+        })}
+
+        <Button
+          navButton
+          title="Sledeća"
+          onClick={() => setPage((p) => p + 1)}
+          disabled={!hasMore || loading}
+        />
       </div>
 
+      {/* STATES */}
       {loading && posts.length > 0 && (
-        <p style={{ textAlign: "center" }}>Učitavanje...</p>
+        <p className={styles.empty}>Učitavanje...</p>
       )}
+
       {!loading && posts.length === 0 && (
-        <p style={{ textAlign: "center" }}>Nema rezultata.</p>
+        <p className={styles.empty}>Nema rezultata.</p>
       )}
+
       {error && (
-        <p style={{ textAlign: "center" }}>
-          Došlo je do greške prilikom učitavanja postova.
-        </p>
+        <p className={styles.empty}>Došlo je do greške prilikom učitavanja.</p>
       )}
     </div>
   );

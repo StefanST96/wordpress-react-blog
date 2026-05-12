@@ -30,12 +30,9 @@ const optimizePosts = (data = []) => {
 };
 
 export function usePaginationPosts(filters, debouncedSearch) {
-  const initialCacheKey = { ...filters, search: debouncedSearch };
-  const initialCached = postCache.get(initialCacheKey, 1);
-
-  const [posts, setPosts] = useState(initialCached ?? []);
+  const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(!initialCached);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
@@ -53,9 +50,22 @@ export function usePaginationPosts(filters, debouncedSearch) {
   const fetchPosts = async (currentPage, currentFilters, currentSearch) => {
     if (isFetching.current) return;
 
+    const cacheKey = {
+      ...currentFilters,
+      search: currentSearch,
+    };
+
+    // ✅ CACHE CHECK
+    const cached = postCache.get(cacheKey, currentPage);
+
+    if (cached) {
+      setPosts(cached);
+      setHasMore(cached.length === PER_PAGE);
+      return;
+    }
+
     try {
       isFetching.current = true;
-
       setLoading(true);
       setError(false);
 
@@ -69,19 +79,16 @@ export function usePaginationPosts(filters, debouncedSearch) {
 
       if (!Array.isArray(data)) {
         setHasMore(false);
+        setPosts([]);
         return;
       }
 
       const optimized = optimizePosts(data);
 
-      postCache.set(
-        optimized,
-        { ...currentFilters, search: currentSearch },
-        currentPage,
-      );
+      // ✅ SAVE CACHE
+      postCache.set(optimized, cacheKey, currentPage);
 
       setPosts(optimized);
-
       setHasMore(data.length === PER_PAGE);
     } catch (e) {
       console.error(e);
@@ -92,74 +99,31 @@ export function usePaginationPosts(filters, debouncedSearch) {
     }
   };
 
-  // FILTER / SEARCH CHANGE
+  // reset na filter/search
   useEffect(() => {
     setPage(1);
     setHasMore(true);
 
-    const cacheKey = {
-      ...filters,
-      search: debouncedSearch,
-    };
-
-    const cached = postCache.get(cacheKey, 1);
-
-    if (cached?.length) {
-      setPosts(cached);
-      setLoading(false);
-      return;
-    }
-
     fetchPosts(1, filters, debouncedSearch);
   }, [filters.category, filters.city, debouncedSearch]);
 
-  // PAGE CHANGE
+  // page change
   useEffect(() => {
-    // spreči dupli fetch na mount-u
     if (!mounted.current) {
       mounted.current = true;
       return;
     }
 
-    const currentFilters = filtersRef.current;
-    const currentSearch = searchRef.current;
-
-    const cacheKey = {
-      ...currentFilters,
-      search: currentSearch,
-    };
-
-    const cached = postCache.get(cacheKey, page);
-
-    if (cached?.length) {
-      setPosts(cached);
-      setLoading(false);
-      return;
-    }
-
-    fetchPosts(page, currentFilters, currentSearch);
+    fetchPosts(page, filtersRef.current, searchRef.current);
   }, [page]);
-
-  const nextPage = () => {
-    if (!loading && hasMore) {
-      setPage((p) => p + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (page > 1 && !loading) {
-      setPage((p) => p - 1);
-    }
-  };
 
   return {
     posts,
     page,
+    setPage,
     loading,
     error,
     hasMore,
-    nextPage,
-    prevPage,
-    setPage,
+    PER_PAGE,
   };
 }
