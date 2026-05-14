@@ -18,8 +18,29 @@
 }
 
 .content {
-  line-height: 1.6;
-  font-size: 1.1rem;
+  overflow-x: hidden;
+
+  :global(.vc_row),
+  :global(.vc_row_inner) {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  :global(.vc_column),
+  :global(.vc_column_inner) {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  :global(img),
+  :global(iframe) {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 .mediaGrid {
@@ -76,6 +97,16 @@
 }
 
 @media (max-width: 768px) {
+  @media (max-width: 768px) {
+    .content {
+      :global(.td-pb-span6),
+      :global(.vc_col-sm-6) {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+      }
+    }
+  }
   .mediaGrid {
     grid-template-columns: repeat(2, 1fr);
 

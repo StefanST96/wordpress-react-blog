@@ -111,6 +111,9 @@ const Navbar = () => {
 
           <Button
             onClick={toggleTheme}
+            aria-label={
+              theme === "light" ? "Uključi tamni mod" : "Uključi svetli mod"
+            }
             title={
               theme === "light" ? (
                 <MoonStar size={16} strokeWidth={1.25} />

@@ -15,7 +15,7 @@ const PostCard = ({ post, onCategoryClick }) => {
     <Link to={`/${post.slug}`} className={styles.card}>
       <div className={styles.content}>
         <img src={image} alt="" className={styles.image} />
-        <h4
+        <h3
           className={styles.title}
           dangerouslySetInnerHTML={{ __html: post.title.rendered }}
         />

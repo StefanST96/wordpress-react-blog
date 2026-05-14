@@ -34,9 +34,9 @@ function App() {
       <Router>
         <ScrollToTop />
         <Navbar name={site.name} logo={site.logo} />
-
-        <AppRoutes />
-
+        <main>
+          <AppRoutes />
+        </main>
         <Footer name={site.name} logo={site.logo} />
       </Router>
     </ThemeProvider>

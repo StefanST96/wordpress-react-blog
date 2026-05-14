@@ -14,6 +14,7 @@ const Button = ({
   pageButton,
   navButton,
   active,
+  ...rest
 }) => {
   const classes = `${success ? styles.success : ""} ${warning ? styles.warning : ""} ${danger ? styles.danger : ""} ${small ? styles.small : ""}${search ? styles.search : ""} ${dark ? styles.dark : ""} ${pageButton ? styles.pageButton : ""} ${navButton ? styles.navButton : ""} ${active ? styles.active : ""} 
   `;
@@ -23,6 +24,7 @@ const Button = ({
       className={`${styles.button} ${classes}`}
       disabled={disabled}
       onClick={onClick}
+      {...rest}
     >
       {title}
     </button>

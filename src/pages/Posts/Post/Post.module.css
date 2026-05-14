@@ -18,8 +18,26 @@
 }
 
 .content {
-  line-height: 1.6;
-  font-size: 1.1rem;
+  overflow-x: hidden;
+}
+.content :global(.vc_row),
+.content :global(.vc_row_inner) {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 0 !important;
+}
+.content :global(.vc_column),
+.content :global(.vc_column_inner) {
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.content :global(img),
+.content :global(iframe) {
+  max-width: 100%;
+  height: auto;
 }
 
 .mediaGrid {
@@ -72,6 +90,14 @@
   font-size: 13px;
 }
 
+@media (max-width: 768px) and (max-width: 768px) {
+  .content :global(.td-pb-span6),
+  .content :global(.vc_col-sm-6) {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+}
 @media (max-width: 768px) {
   .mediaGrid {
     grid-template-columns: repeat(2, 1fr);

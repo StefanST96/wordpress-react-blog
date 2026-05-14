@@ -58,6 +58,7 @@
 }
 .container .hero .overlay .heroContent .heroText {
   font-size: 18px;
+  color: #777;
   opacity: 0.9;
   text-align: left;
   margin-bottom: 28px;

@@ -112,9 +112,9 @@ const Posts = () => {
               Pronađite najbolje firme i usluge
             </h1>
 
-            <p className={styles.heroText}>
+            <h2 className={styles.heroText}>
               Brzo i lako pronađite firme i kvalitetne usluge u vašem gradu.
-            </p>
+            </h2>
 
             {/* SEARCH */}
             <div className={styles.heroSearch}>

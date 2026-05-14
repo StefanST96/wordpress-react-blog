@@ -1,5 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
+/* ---------------------------
+   OG META TAG HELPER
+---------------------------- */
+const setMetaTag = (property, content) => {
+  if (!content) return;
+  let el =
+    document.querySelector(`meta[property="${property}"]`) ||
+    document.querySelector(`meta[name="${property}"]`);
+  if (!el) {
+    el = document.createElement("meta");
+    el.setAttribute(
+      property.startsWith("og:") || property.startsWith("twitter:")
+        ? "property"
+        : "name",
+      property,
+    );
+    document.head.appendChild(el);
+  }
+  el.setAttribute("content", content);
+};
+
+const setPostMeta = (post) => {
+  const title = decodeHtmlEntities(
+    post.title?.rendered?.replace(/<[^>]+>/g, "") || "",
+  );
+  const description =
+    post.excerpt?.rendered
+      ?.replace(/<[^>]+>/g, "")
+      .trim()
+      .slice(0, 200) || "";
+  const image = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "";
+  const url = window.location.href;
+
+  document.title = title;
+
+  setMetaTag("og:title", title);
+  setMetaTag("og:description", description);
+  setMetaTag("og:image", image);
+  setMetaTag("og:url", url);
+  setMetaTag("og:type", "article");
+
+  setMetaTag("twitter:card", "summary_large_image");
+  setMetaTag("twitter:title", title);
+  setMetaTag("twitter:description", description);
+  setMetaTag("twitter:image", image);
+};
+
+const resetMeta = () => {
+  document.title = "Biznis Klub";
+  [
+    "og:title",
+    "og:description",
+    "og:image",
+    "og:url",
+    "og:type",
+    "twitter:card",
+    "twitter:title",
+    "twitter:description",
+    "twitter:image",
+  ].forEach((prop) => {
+    const el =
+      document.querySelector(`meta[property="${prop}"]`) ||
+      document.querySelector(`meta[name="${prop}"]`);
+    if (el) el.remove();
+  });
+};
 import Loader from "../../../components/UI/Loader/Loader";
 import { Button } from "../../../components/UI/Button/Button";
 import { usePost } from "../../../hooks/usePost";
@@ -115,6 +182,11 @@ const Post = () => {
 
   const { post, loading, error } = usePost(slug);
 
+  useEffect(() => {
+    if (post) setPostMeta(post);
+    return () => resetMeta();
+  }, [post]);
+
   if (loading) return <Loader />;
   if (error || !post) return <p>Post nije pronađen.</p>;
 
@@ -144,7 +216,9 @@ const Post = () => {
 
       <h1
         className={styles.title}
-        dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+        dangerouslySetInnerHTML={{
+          __html: decodeHtmlEntities(post.title.rendered),
+        }}
       />
 
       <div className={styles.content}>
