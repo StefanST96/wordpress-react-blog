@@ -86,6 +86,11 @@ export const getFilteredPosts = ({
 
 export const getPost = (id) => getData(`/posts/${id}?_embed`);
 
+export const getPostBySlug = async (slug) => {
+  const results = await getData(`/posts?slug=${slug}&_embed`);
+  return Array.isArray(results) && results.length > 0 ? results[0] : null;
+};
+
 export const getCities = () => getData("/gradovi?per_page=100");
 
 export const getCategories = () => getData("/categories?per_page=100");

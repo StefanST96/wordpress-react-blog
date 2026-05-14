@@ -110,10 +110,10 @@ const MediaGrid = ({ ids }) => {
    MAIN COMPONENT
 ---------------------------- */
 const Post = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
 
-  const { post, loading, error } = usePost(id);
+  const { post, loading, error } = usePost(slug);
 
   if (loading) return <Loader />;
   if (error || !post) return <p>Post nije pronađen.</p>;

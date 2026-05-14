@@ -10,7 +10,7 @@ export function ThemeProvider({ children }) {
       return saved;
     }
 
-    return "dark";
+    return "light";
   });
 
   const toggleTheme = () => {

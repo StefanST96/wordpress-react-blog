@@ -1,0 +1,127 @@
+@charset "UTF-8";
+.footer {
+  margin-top: 80px;
+  background: #1b1b1b;
+  color: #fff;
+  padding: 60px 20px 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* BRAND */
+.brand {
+  max-width: 420px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.logo img {
+  height: 36px;
+  width: auto;
+  -o-object-fit: contain;
+     object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  filter: brightness(0) invert(1);
+}
+
+.logo span {
+  transition: 0.2s ease;
+}
+
+.logo:hover img {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.description {
+  line-height: 1.7;
+  color: #ffffff;
+  font-size: 14px;
+}
+.description a {
+  color: #1e74bd;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+/* LINKS */
+.links h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.links ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.links a {
+  color: #ffffff;
+  font-size: 14px;
+  transition: 0.2s ease;
+  text-decoration: none;
+}
+
+.links a:hover {
+  color: #a4a4a4;
+  transform: translateX(3px);
+}
+
+/* BOTTOM */
+.bottom {
+  padding-top: 20px;
+  text-align: center;
+  color: #bebebe;
+  font-size: 13px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .top {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .top {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .footer {
+    padding-top: 40px;
+  }
+}
+/* DARK MODE SUPPORT (ako koristiš theme context) */
+[data-theme=dark] .footer {
+  background: #13131a;
+}
+[data-theme=dark] .links a {
+  color: #cbcbcb;
+}
+[data-theme=dark] .links a:hover {
+  color: #fff;
+}
+[data-theme=dark] .description {
+  color: #cbcbcb;
+}/*# sourceMappingURL=Footer.module.css.map */

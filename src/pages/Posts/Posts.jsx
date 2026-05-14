@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Input } from "../../components/UI/Input/Input";
 import { Select } from "../../components/UI/Select/Select";
 import PostCard from "./PostCard/PostCard";
 import PostCardSkeleton from "../../components/UI/Skeleton/PostCardSkeleton";
 import styles from "./Posts.module.scss";
-
 import { Search } from "lucide-react";
 import { useDebounce } from "../../hooks/useDebounce";
 import { usePaginationPosts } from "../../hooks/usePaginationPosts";
@@ -32,17 +31,29 @@ const Posts = () => {
       ...prev,
       [key]: value,
     }));
-
     setPage(1);
   };
 
+  // load data
   useEffect(() => {
     const load = async () => {
       try {
+        const cachedCategories = localStorage.getItem("categories");
+        const cachedCities = localStorage.getItem("cities");
+
+        if (cachedCategories && cachedCities) {
+          setCategories(JSON.parse(cachedCategories));
+          setCities(JSON.parse(cachedCities));
+          return;
+        }
+
         const [c, ci] = await Promise.all([getCategories(), getCities()]);
 
         setCategories(c || []);
         setCities(ci || []);
+
+        localStorage.setItem("categories", JSON.stringify(c || []));
+        localStorage.setItem("cities", JSON.stringify(ci || []));
       } catch (e) {
         console.error(e);
       }
@@ -51,9 +62,12 @@ const Posts = () => {
     load();
   }, []);
 
+  const quickCategories = useMemo(() => {
+    return categories.filter((c) => c.parent !== 0).slice(0, 8);
+  }, [categories]);
+
   const getPagination = (current, total) => {
     const delta = 1;
-
     const range = [];
     const rangeWithDots = [];
 
@@ -67,7 +81,6 @@ const Posts = () => {
     }
 
     let prev;
-
     for (let i of range) {
       if (prev) {
         if (i - prev === 2) {
@@ -76,7 +89,6 @@ const Posts = () => {
           rangeWithDots.push("...");
         }
       }
-
       rangeWithDots.push(i);
       prev = i;
     }
@@ -90,7 +102,7 @@ const Posts = () => {
     <div className={styles.container}>
       {/* HERO */}
       <div className={styles.hero}>
-        <img src={heroImage} alt="Biznis Klub" className={styles.heroImage} />
+        <img src={heroImage} className={styles.heroImage} alt="" />
 
         <div className={styles.overlay}>
           <div className={styles.heroContent}>
@@ -104,28 +116,29 @@ const Posts = () => {
               Brzo i lako pronađite firme i kvalitetne usluge u vašem gradu.
             </p>
 
-            {/* HERO SEARCH */}
+            {/* SEARCH */}
             <div className={styles.heroSearch}>
               <Search className={styles.searchIcon} />
+
               <Input
                 value={search}
-                onChange={setSearch}
-                placeholder="Pretraga firmi i usluga..."
+                onChange={(v) => {
+                  setSearch(v);
+                  setPage(1);
+                }}
+                placeholder="Pretraga..."
               />
 
               <Select
                 value={filters.category}
-                onChange={(v) => changeFilters("category", v)}
+                onChange={(v) =>
+                  changeFilters("category", v === "all" ? "all" : Number(v))
+                }
                 options={[
-                  {
-                    id: "all",
-                    label: "Sve kategorije",
-                    value: "all",
-                  },
-
+                  { id: "all", label: "Sve kategorije", value: "all" },
                   ...categories.map((c) => ({
                     id: c.id,
-                    label: `${c.parent ? "— " : ""}${c.name}`,
+                    label: c.name,
                     value: c.id,
                   })),
                 ]}
@@ -133,14 +146,11 @@ const Posts = () => {
 
               <Select
                 value={filters.city}
-                onChange={(v) => changeFilters("city", v)}
+                onChange={(v) =>
+                  changeFilters("city", v === "all" ? "all" : Number(v))
+                }
                 options={[
-                  {
-                    id: "all",
-                    label: "Svi gradovi",
-                    value: "all",
-                  },
-
+                  { id: "all", label: "Svi gradovi", value: "all" },
                   ...cities.map((c) => ({
                     id: c.id,
                     label: c.name,
@@ -151,11 +161,9 @@ const Posts = () => {
             </div>
 
             {/* QUICK CATEGORIES */}
-            <div className={styles.quickCategories}>
-              {categories
-                .filter((c) => c.parent !== 0)
-                .slice(0, 8)
-                .map((cat) => (
+            {quickCategories.length > 0 && (
+              <div className={styles.quickCategories}>
+                {quickCategories.map((cat) => (
                   <button
                     key={cat.id}
                     className={styles.quickCategory}
@@ -164,12 +172,13 @@ const Posts = () => {
                     {cat.name}
                   </button>
                 ))}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* LISTA */}
+      {/* LIST */}
       {loading && posts.length === 0 ? (
         <div className={styles.list}>
           {Array.from({ length: PER_PAGE }).map((_, i) => (
@@ -193,16 +202,12 @@ const Posts = () => {
           disabled={page === 1 || loading}
         />
 
-        {getPagination(page, totalPages).map((item, index) => {
-          if (item === "...") {
-            return (
-              <span key={index} className={styles.dots}>
-                ...
-              </span>
-            );
-          }
-
-          return (
+        {getPagination(page, totalPages).map((item, index) =>
+          item === "..." ? (
+            <span key={index} className={styles.dots}>
+              ...
+            </span>
+          ) : (
             <Button
               key={index}
               pageButton
@@ -211,8 +216,8 @@ const Posts = () => {
               onClick={() => setPage(item)}
               disabled={loading}
             />
-          );
-        })}
+          ),
+        )}
 
         <Button
           navButton

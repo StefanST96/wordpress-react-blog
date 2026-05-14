@@ -12,7 +12,7 @@ const PostCard = ({ post, onCategoryClick }) => {
   const categories = post._embedded?.["wp:term"]?.[0] || [];
 
   return (
-    <Link to={`/post/${post.id}`} className={styles.card}>
+    <Link to={`/${post.slug}`} className={styles.card}>
       <div className={styles.content}>
         <img src={image} alt="" className={styles.image} />
         <h4

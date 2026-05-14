@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getPost } from "../api/posts";
+import { getPostBySlug } from "../api/posts";
 
-export function usePost(id) {
+export function usePost(slug) {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -11,7 +11,7 @@ export function usePost(id) {
       try {
         setLoading(true);
 
-        const data = await getPost(id);
+        const data = await getPostBySlug(slug);
 
         if (data) setPost(data);
         else setError(true);
@@ -22,8 +22,8 @@ export function usePost(id) {
       }
     };
 
-    if (id) fetchPost();
-  }, [id]);
+    if (slug) fetchPost();
+  }, [slug]);
 
   return { post, loading, error };
 }

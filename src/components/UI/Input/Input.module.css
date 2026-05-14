@@ -1,0 +1,43 @@
+.input {
+  display: flex;
+  flex-direction: column;
+}
+.input.center {
+  align-items: center;
+}
+.input .inputField {
+  border: solid 1px #ccc;
+  height: 40px;
+  width: 270px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  padding: 0 12px;
+  outline: none;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+.input .inputField::-moz-placeholder {
+  opacity: 0.5;
+}
+.input .inputField::placeholder {
+  opacity: 0.5;
+}
+.input.small .inputField {
+  height: 32px;
+}
+.input .inputLabel {
+  margin-bottom: 8px;
+}
+
+[data-theme=dark] .input .inputField {
+  background-color: #18181f;
+  color: #fff;
+  border: solid 1px #555;
+  transition: all 0.3s ease;
+}
+[data-theme=dark] .input .inputField::-moz-placeholder {
+  color: #aaa;
+}
+[data-theme=dark] .input .inputField::placeholder {
+  color: #aaa;
+}/*# sourceMappingURL=Input.module.css.map */

@@ -1,0 +1,84 @@
+.select {
+  display: flex;
+  flex-direction: column;
+}
+.select .selectField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: solid 1px #ccc;
+  height: 40px;
+  width: 270px;
+  margin-bottom: 16px;
+  border-radius: 20px;
+  background-color: #fff;
+  padding: 0 12px;
+  outline: none;
+  font-size: 16px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.select .selectField.marginNone {
+  margin-bottom: 0;
+}
+.select .selectField .options {
+  z-index: 99;
+  background-color: #fff;
+  list-style-type: none;
+  position: absolute;
+  text-align: left;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  margin: 12px 0 0 0;
+  border: solid 1px #ccc;
+  border-radius: 12px;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+.select .selectField .options li {
+  padding: 4px;
+}
+.select .selectField .options li:hover {
+  color: #4e4e4e;
+}
+.select .selectField .selectPlaceholder {
+  color: #bababa;
+}
+.select .selectField.disabled {
+  color: #bababa;
+  pointer-events: none;
+}
+.select .selectLabel {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .selectField {
+    font-size: 14px;
+    padding: 10px;
+  }
+  .options {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    z-index: 10;
+  }
+}
+[data-theme=dark] .select .selectField {
+  background-color: #18181f;
+  color: #fff;
+  border: solid 1px #555;
+  transition: all 0.3s ease;
+}
+[data-theme=dark] .select .selectField .options {
+  background-color: #18181f;
+  border: solid 1px #555;
+  transition: all 0.3s ease;
+}
+[data-theme=dark] .select .selectField .options li:hover {
+  color: #cecece;
+}
+[data-theme=dark] .select .selectField.disabled {
+  color: #aaa;
+}/*# sourceMappingURL=Select.module.css.map */

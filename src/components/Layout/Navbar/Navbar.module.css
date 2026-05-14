@@ -1,0 +1,137 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: saturate(180%) blur(20px);
+  background-color: rgba(250, 250, 252, 0.8);
+  border-bottom: 1px solid #ddd;
+}
+
+.wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.navLinks {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.navLink {
+  text-decoration: none;
+  color: #000;
+  transition: 0.2s;
+  font-weight: 700;
+}
+.navLink:hover {
+  color: #777;
+}
+
+.active {
+  padding: 22px 0px 22px 0px;
+  border-bottom: 2px solid #1e74bd;
+}
+
+.hamburger {
+  cursor: pointer;
+  display: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+.hamburger:active {
+  transform: scale(0.9);
+}
+.hamburger svg {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+  .navLinks {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: white;
+    padding: 20px;
+    display: none;
+    gap: 15px;
+    border-bottom: 1px solid #ddd;
+  }
+  .navLinks.open {
+    display: flex;
+  }
+  .active {
+    padding: 0;
+  }
+}
+/* ako je TEXT logo */
+.logo span {
+  transition: 0.2s ease;
+}
+
+/* ako je IMAGE logo (WP) */
+.logo img {
+  height: 64px;
+  width: auto;
+  -o-object-fit: contain;
+     object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* hover efekat */
+.logo:hover img {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* fallback text logo hover */
+.logo:hover span {
+  opacity: 0.8;
+}
+
+[data-theme=dark] .navbar {
+  background-color: rgba(19, 19, 26, 0.8);
+  border-bottom: 1px solid #252530;
+}
+[data-theme=dark] .navLink {
+  color: #9090a8;
+}
+[data-theme=dark] .navLink.active {
+  color: #fff;
+}
+[data-theme=dark] .navLink:hover {
+  color: #fff;
+}
+[data-theme=dark] .navLinks {
+  background: transparent;
+}
+[data-theme=dark] .logo img {
+  filter: brightness(0) invert(1);
+}
+@media (max-width: 768px) {
+  [data-theme=dark] .navLinks {
+    background-color: rgba(19, 19, 26, 0.98);
+  }
+}/*# sourceMappingURL=Navbar.module.css.map */

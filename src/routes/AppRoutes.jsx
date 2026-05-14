@@ -14,7 +14,7 @@ const AppRoutes = () => {
       <Route path="/posts" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/post/:id" element={<Post />} />
+      <Route path="/:slug" element={<Post />} />
       <Route path="/poslovni-adresar" element={<Directory />} />
     </Routes>
   );
