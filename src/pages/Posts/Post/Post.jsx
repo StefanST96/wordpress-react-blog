@@ -198,7 +198,9 @@ const RelatedPosts = ({ postId, tags, categories }) => {
       <h2 className={styles.relatedTitle}>Povezani postovi</h2>
       <div className={styles.relatedGrid}>
         {loading
-          ? Array.from({ length: 3 }).map((_, i) => <PostCardSkeleton key={i} />)
+          ? Array.from({ length: 3 }).map((_, i) => (
+              <PostCardSkeleton key={i} />
+            ))
           : related.map((post) => (
               <PostCard key={post.id} post={post} onCategoryClick={() => {}} />
             ))}
@@ -240,9 +242,27 @@ const Post = () => {
 
   // Extract tag slugs from _embedded wp:term[1]
   const embeddedTags = post._embedded?.["wp:term"]?.[1] || [];
+  const categories = post._embedded?.["wp:term"]?.[0] || [];
 
   return (
     <div className={styles.container}>
+      <div className={styles.metaCategories}>
+        {categories.map((cat, index) => (
+          <span key={cat.id} className={styles.category}>
+            {cat.name}
+            {index !== categories.length - 1 && " - "}
+          </span>
+        ))}
+      </div>
+
+      <div className={styles.metaDate}>
+        <span className={styles.date}>
+          {new Date(post.date).toLocaleDateString("sr-RS", {
+            day: "numeric",
+            month: "short",
+          })}
+        </span>
+      </div>
       <Button
         title={
           <>
