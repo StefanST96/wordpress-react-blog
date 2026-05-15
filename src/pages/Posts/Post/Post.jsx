@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { MapPin } from "lucide-react";
 
 /* ---------------------------
    OG META TAG HELPER
@@ -243,26 +244,36 @@ const Post = () => {
   // Extract tag slugs from _embedded wp:term[1]
   const embeddedTags = post._embedded?.["wp:term"]?.[1] || [];
   const categories = post._embedded?.["wp:term"]?.[0] || [];
-
+  const cities = post._embedded?.["wp:term"]?.[2] || [];
   return (
     <div className={styles.container}>
-      <div className={styles.metaCategories}>
-        {categories.map((cat, index) => (
-          <span key={cat.id} className={styles.category}>
-            {cat.name}
-            {index !== categories.length - 1 && " - "}
-          </span>
-        ))}
-      </div>
+      <div className={styles.meta}>
+        <div className={styles.metaCategories}>
+          {categories.map((cat, index) => (
+            <span key={cat.id} className={styles.category}>
+              {cat.name}
+              {index !== categories.length - 1 && " - "}
+            </span>
+          ))}
+        </div>
 
-      <div className={styles.metaDate}>
-        <span className={styles.date}>
-          {new Date(post.date).toLocaleDateString("sr-Latn-RS", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })}
-        </span>
+        <div className={styles.cities}>
+          {cities.length > 0 && (
+            <span className={styles.city}>
+              <MapPin size={14} /> {cities[0].name}
+            </span>
+          )}
+        </div>
+
+        <div className={styles.metaDate}>
+          <span className={styles.date}>
+            {new Date(post.date).toLocaleDateString("sr-Latn-RS", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
+          </span>
+        </div>
       </div>
       <Button
         title={

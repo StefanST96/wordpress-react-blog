@@ -6,8 +6,24 @@
   word-break: break-word;
 }
 
+.meta {
+  margin-bottom: 20px;
+  gap: 12px;
+  background-color: #6b7280;
+  padding: 12px 20px;
+  border-radius: 8px;
+}
+
 .metaCategories {
-  color: #6b7280;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.cities {
+  color: #fff;
   display: flex;
   justify-content: center;
   gap: 6px;
@@ -16,10 +32,9 @@
 }
 
 .metaDate {
-  color: #6b7280;
+  color: #fff;
   text-align: center;
   font-size: 14px;
-  margin-bottom: 20px;
 }
 
 .title {
