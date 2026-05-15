@@ -257,9 +257,10 @@ const Post = () => {
 
       <div className={styles.metaDate}>
         <span className={styles.date}>
-          {new Date(post.date).toLocaleDateString("sr-RS", {
+          {new Date(post.date).toLocaleDateString("sr-Latn-RS", {
             day: "numeric",
             month: "short",
+            year: "numeric",
           })}
         </span>
       </div>
