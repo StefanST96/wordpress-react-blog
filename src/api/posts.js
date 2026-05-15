@@ -93,9 +93,50 @@ export const getPostBySlug = async (slug) => {
 
 export const getCities = () => getData("/gradovi?per_page=100");
 
-export const getCategories = () => getData("/categories?per_page=100");
+export const getCategories = async () => {
+  const page1 = await getData("/categories?per_page=100&page=1");
+  if (!Array.isArray(page1) || page1.length < 100) return page1 || [];
+  const page2 = await getData("/categories?per_page=100&page=2");
+  return [...page1, ...(Array.isArray(page2) ? page2 : [])];
+};
 
 export const getLatestPosts = () => getData(buildPostsUrl({ per_page: 3 }));
 
 export const getMediaByIds = (ids = []) =>
   getData(`/media?include=${ids.join(",")}&per_page=100`);
+
+export const getPostsByTag = (tagId, page = 1, perPage = 12) =>
+  getData(
+    buildPostsUrl({
+      tags: tagId,
+      page,
+      per_page: perPage,
+    }),
+  );
+
+export const getTagBySlug = async (slug) => {
+  const results = await getData(`/tags?slug=${slug}`);
+  return Array.isArray(results) && results.length > 0 ? results[0] : null;
+};
+
+export const getRelatedPosts = (postId, tagIds = [], categoryIds = []) => {
+  if (tagIds.length > 0) {
+    return getData(
+      buildPostsUrl({
+        tags: tagIds[0],
+        exclude: postId,
+        per_page: 3,
+      }),
+    );
+  }
+  if (categoryIds.length > 0) {
+    return getData(
+      buildPostsUrl({
+        categories: categoryIds[0],
+        exclude: postId,
+        per_page: 3,
+      }),
+    );
+  }
+  return Promise.resolve([]);
+};

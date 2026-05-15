@@ -49,7 +49,7 @@ const Select = ({
         } ${customClass || ""} ${disabled ? styles.disabled : ""}`}
         onClick={dropDownToggle}
       >
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label : (placeholder || (options[0]?.label ?? ""))}
 
         {open && (
           <ul className={styles.options}>

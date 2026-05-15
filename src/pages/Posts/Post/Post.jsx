@@ -70,9 +70,12 @@ const resetMeta = () => {
 import Loader from "../../../components/UI/Loader/Loader";
 import { Button } from "../../../components/UI/Button/Button";
 import { usePost } from "../../../hooks/usePost";
-import { getMediaByIds } from "../../../api/posts";
+import { getMediaByIds, getRelatedPosts } from "../../../api/posts";
 import styles from "./Post.module.scss";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Tag } from "lucide-react";
+import { Link } from "react-router-dom";
+import PostCard from "../PostCard/PostCard";
+import PostCardSkeleton from "../../../components/UI/Skeleton/PostCardSkeleton";
 
 /* ---------------------------
    HTML decode
@@ -174,6 +177,37 @@ const MediaGrid = ({ ids }) => {
 };
 
 /* ---------------------------
+   RELATED POSTS
+---------------------------- */
+const RelatedPosts = ({ postId, tags, categories }) => {
+  const [related, setRelated] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!postId) return;
+    getRelatedPosts(postId, tags, categories)
+      .then((data) => setRelated(Array.isArray(data) ? data.slice(0, 3) : []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [postId]);
+
+  if (!loading && related.length === 0) return null;
+
+  return (
+    <div className={styles.relatedSection}>
+      <h2 className={styles.relatedTitle}>Povezani postovi</h2>
+      <div className={styles.relatedGrid}>
+        {loading
+          ? Array.from({ length: 3 }).map((_, i) => <PostCardSkeleton key={i} />)
+          : related.map((post) => (
+              <PostCard key={post.id} post={post} onCategoryClick={() => {}} />
+            ))}
+      </div>
+    </div>
+  );
+};
+
+/* ---------------------------
    MAIN COMPONENT
 ---------------------------- */
 const Post = () => {
@@ -199,6 +233,13 @@ const Post = () => {
   const parts = cleanContent.split(
     '<div class="__media-grid-placeholder"></div>',
   );
+
+  // tags and categories for related posts
+  const postTags = post.tags || [];
+  const postCategories = post.categories || [];
+
+  // Extract tag slugs from _embedded wp:term[1]
+  const embeddedTags = post._embedded?.["wp:term"]?.[1] || [];
 
   return (
     <div className={styles.container}>
@@ -244,16 +285,35 @@ const Post = () => {
           </div>
         )}
 
-        {keywords.length > 0 && (
+        {/* KEYWORDS / TAGS */}
+        {(keywords.length > 0 || embeddedTags.length > 0) && (
           <div className={styles.keywords}>
-            {keywords.map((kw) => (
-              <span key={kw} className={styles.keyword}>
-                {kw}
-              </span>
-            ))}
+            <Tag size={15} className={styles.tagIcon} />
+            {embeddedTags.length > 0
+              ? embeddedTags.map((tag) => (
+                  <Link
+                    key={tag.id}
+                    to={`/tag/${tag.slug}`}
+                    className={styles.keyword}
+                  >
+                    {tag.name}
+                  </Link>
+                ))
+              : keywords.map((kw) => (
+                  <span key={kw} className={styles.keyword}>
+                    {kw}
+                  </span>
+                ))}
           </div>
         )}
       </div>
+
+      {/* RELATED POSTS */}
+      <RelatedPosts
+        postId={post.id}
+        tags={postTags}
+        categories={postCategories}
+      />
     </div>
   );
 };

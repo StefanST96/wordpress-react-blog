@@ -34,17 +34,22 @@
       margin: 12px 0 0 0;
       border: solid 1px #ccc;
       border-radius: 12px;
-      padding: 0 12px;
+      padding: 4px 0;
       box-sizing: border-box;
+      max-height: 240px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
 
       li {
-        padding: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
 
         &:hover {
           color: #4e4e4e;
         }
       }
     }
+
     .selectPlaceholder {
       color: #bababa;
     }
@@ -59,6 +64,7 @@
     margin-bottom: 8px;
   }
 }
+
 @media (max-width: 768px) {
   .selectField {
     font-size: 14px;
@@ -85,6 +91,7 @@
         background-color: #18181f;
         border: solid 1px #555;
         transition: all 0.3s ease;
+
         li {
           &:hover {
             color: #cecece;

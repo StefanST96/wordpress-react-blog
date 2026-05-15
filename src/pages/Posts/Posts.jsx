@@ -1,23 +1,81 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
 import { Input } from "../../components/UI/Input/Input";
 import { Select } from "../../components/UI/Select/Select";
 import PostCard from "./PostCard/PostCard";
 import PostCardSkeleton from "../../components/UI/Skeleton/PostCardSkeleton";
+
 import styles from "./Posts.module.scss";
+
 import { Search } from "lucide-react";
+
 import { useDebounce } from "../../hooks/useDebounce";
 import { usePaginationPosts } from "../../hooks/usePaginationPosts";
+
 import { getCategories, getCities } from "../../api/posts";
+
 import { Button } from "../../components/UI/Button/Button";
+
 import heroImage from "../../assets/hero.png";
 
+const ALLOWED_CATEGORY_IDS = [
+  2204, // Zdravstvo
+  2234, // Deca
+  2214, // Auto-moto
+  2259, // Sport
+  2263, // Obrazovanje
+  3110, // Usluge
+  2222, // Ugostiteljstvo
+  2175, // Turizam i transport
+  2343, // Trgovina
+  2728, // Galanterija
+  2183, // Gradjevinstvo
+  2483, // Hrana
+  2185, // Kuca
+  2187, // Nega lica i tela
+  2180, // Mediji
+  2275, // Elektronika
+  2863, // Agro
+  2311, // Kultura
+];
+
+const CATEGORY_LABELS = {
+  2204: "Zdravstvo",
+  2234: "Deca",
+  2214: "Auto-moto",
+  2259: "Sport",
+  2263: "Obrazovanje",
+  3110: "Usluge",
+  2222: "Ugostiteljstvo",
+  2175: "Turizam i transport",
+  2343: "Trgovina",
+  2728: "Galanterija",
+  2183: "Gradjevinstvo",
+  2483: "Hrana",
+  2185: "Kuca",
+  2187: "Nega lica i tela",
+  2180: "Mediji",
+  2275: "Elektronika",
+  2863: "Agro",
+  2311: "Kultura",
+};
+
 const Posts = () => {
+  const listRef = useRef(null);
+
   const [filters, setFilters] = useState({
     category: "all",
     city: "all",
   });
 
   const [search, setSearch] = useState("");
+
   const debouncedSearch = useDebounce(search, 300);
 
   const [categories, setCategories] = useState([]);
@@ -31,21 +89,63 @@ const Posts = () => {
       ...prev,
       [key]: value,
     }));
+
     setPage(1);
   };
 
-  // load data
+  const handleCategorySelect = useCallback(
+    (categoryId) => {
+      setFilters((prev) => ({
+        ...prev,
+        category: categoryId,
+      }));
+
+      setPage(1);
+
+      setTimeout(() => {
+        listRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 80);
+    },
+    [setPage],
+  );
+
   useEffect(() => {
+    const CACHE_TTL = 60 * 60 * 1000;
+    const CACHE_VERSION = "v3";
+
     const load = async () => {
       try {
+        const cachedVersion = localStorage.getItem("categories_version");
+
         const cachedCategories = localStorage.getItem("categories");
+
         const cachedCities = localStorage.getItem("cities");
 
-        if (cachedCategories && cachedCities) {
+        const cachedAt = Number(
+          localStorage.getItem("categories_cached_at") || 0,
+        );
+
+        const cacheValid =
+          cachedVersion === CACHE_VERSION && Date.now() - cachedAt < CACHE_TTL;
+
+        if (cachedCategories && cachedCities && cacheValid) {
           setCategories(JSON.parse(cachedCategories));
+
           setCities(JSON.parse(cachedCities));
+
           return;
         }
+
+        localStorage.removeItem("categories");
+
+        localStorage.removeItem("cities");
+
+        localStorage.removeItem("categories_cached_at");
+
+        localStorage.removeItem("categories_version");
 
         const [c, ci] = await Promise.all([getCategories(), getCities()]);
 
@@ -53,7 +153,12 @@ const Posts = () => {
         setCities(ci || []);
 
         localStorage.setItem("categories", JSON.stringify(c || []));
+
         localStorage.setItem("cities", JSON.stringify(ci || []));
+
+        localStorage.setItem("categories_cached_at", String(Date.now()));
+
+        localStorage.setItem("categories_version", CACHE_VERSION);
       } catch (e) {
         console.error(e);
       }
@@ -62,12 +167,15 @@ const Posts = () => {
     load();
   }, []);
 
-  const quickCategories = useMemo(() => {
-    return categories.filter((c) => c.parent !== 0).slice(0, 8);
+  const directoryCategories = useMemo(() => {
+    return categories.filter((c) =>
+      ALLOWED_CATEGORY_IDS.includes(Number(c.id ?? 0)),
+    );
   }, [categories]);
 
   const getPagination = (current, total) => {
     const delta = 1;
+
     const range = [];
     const rangeWithDots = [];
 
@@ -81,6 +189,7 @@ const Posts = () => {
     }
 
     let prev;
+
     for (let i of range) {
       if (prev) {
         if (i - prev === 2) {
@@ -89,7 +198,9 @@ const Posts = () => {
           rangeWithDots.push("...");
         }
       }
+
       rangeWithDots.push(i);
+
       prev = i;
     }
 
@@ -107,15 +218,12 @@ const Posts = () => {
         <div className={styles.overlay}>
           <div className={styles.heroContent}>
             <span className={styles.badge}>Poslovni adresar Srbije</span>
-
             <h1 className={styles.heroTitle}>
               Pronađite najbolje firme i usluge
             </h1>
-
             <h2 className={styles.heroText}>
               Brzo i lako pronađite firme i kvalitetne usluge u vašem gradu.
             </h2>
-
             {/* SEARCH */}
             <div className={styles.heroSearch}>
               <Search className={styles.searchIcon} />
@@ -131,11 +239,17 @@ const Posts = () => {
 
               <Select
                 value={filters.category}
+                placeholder="Sve kategorije"
                 onChange={(v) =>
                   changeFilters("category", v === "all" ? "all" : Number(v))
                 }
                 options={[
-                  { id: "all", label: "Sve kategorije", value: "all" },
+                  {
+                    id: "all",
+                    label: "Sve kategorije",
+                    value: "all",
+                  },
+
                   ...categories.map((c) => ({
                     id: c.id,
                     label: c.name,
@@ -146,11 +260,17 @@ const Posts = () => {
 
               <Select
                 value={filters.city}
+                placeholder="Svi gradovi"
                 onChange={(v) =>
                   changeFilters("city", v === "all" ? "all" : Number(v))
                 }
                 options={[
-                  { id: "all", label: "Svi gradovi", value: "all" },
+                  {
+                    id: "all",
+                    label: "Svi gradovi",
+                    value: "all",
+                  },
+
                   ...cities.map((c) => ({
                     id: c.id,
                     label: c.name,
@@ -159,19 +279,26 @@ const Posts = () => {
                 ]}
               />
             </div>
-
             {/* QUICK CATEGORIES */}
-            {quickCategories.length > 0 && (
+            {directoryCategories.length > 0 && (
               <div className={styles.quickCategories}>
-                {quickCategories.map((cat) => (
+                {directoryCategories.map((cat) => (
                   <button
                     key={cat.id}
                     className={styles.quickCategory}
-                    onClick={() => changeFilters("category", cat.id)}
+                    onClick={() => handleCategorySelect(cat.id)}
                   >
-                    {cat.name}
+                    {CATEGORY_LABELS[cat.id] || cat.name}
                   </button>
                 ))}
+                {filters.category !== "all" && (
+                  <button
+                    className={styles.categoryReset}
+                    onClick={() => handleCategorySelect("all")}
+                  >
+                    ✕ Prikaži sve kategorije
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -179,16 +306,24 @@ const Posts = () => {
       </div>
 
       {/* LIST */}
+      <div ref={listRef} className={styles.listAnchor} />
+
       {loading && posts.length === 0 ? (
         <div className={styles.list}>
-          {Array.from({ length: PER_PAGE }).map((_, i) => (
+          {Array.from({
+            length: PER_PAGE,
+          }).map((_, i) => (
             <PostCardSkeleton key={i} />
           ))}
         </div>
       ) : (
         <div className={styles.list}>
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard
+              key={post.id}
+              post={post}
+              onCategoryClick={(catId) => handleCategorySelect(catId)}
+            />
           ))}
         </div>
       )}

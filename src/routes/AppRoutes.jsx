@@ -6,6 +6,7 @@ import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
 import Post from "../pages/Posts/Post/Post";
 import Directory from "../pages/Directory/Directory";
+import TagPosts from "../pages/TagPosts/TagPosts";
 
 const AppRoutes = () => {
   return (
@@ -14,8 +15,9 @@ const AppRoutes = () => {
       <Route path="/posts" element={<Home />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/:slug" element={<Post />} />
       <Route path="/poslovni-adresar" element={<Directory />} />
+      <Route path="/tag/:tagSlug" element={<TagPosts />} />
+      <Route path="/:slug" element={<Post />} />
     </Routes>
   );
 };
